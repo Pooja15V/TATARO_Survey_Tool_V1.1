@@ -1,0 +1,3855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stroke Rehab Survey</title>
+<style>
+    /* ---------- BASE ---------- */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        font-size: 16px;
+        color: #222;   /* strong readable text */
+    }
+    header {
+        background: #004d66;
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+    h2 { color: #004d66; }
+    h3 { margin-top: 30px; }
+    .question { margin-bottom: 35px; }
+    label { cursor: pointer; }
+    section {
+        padding: 20px;
+        border-bottom: 1px solid #ccc;
+        display: none;
+        opacity: 0;
+        transform: translateX(30px);
+        transition: all 0.35s ease;
+    }
+    section.active {
+        display: block;
+        opacity: 1;
+        transform: translateX(0);
+    }
+    /* ---------- NAVIGATION ---------- */
+    nav {
+        position: sticky;
+        top: 0;
+        background: #e6f2f5;
+        padding: 10px;
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+    nav a {
+        text-decoration: none;
+        color: #004d66;
+        font-weight: bold;
+    }
+    /* ---------- INPUTS ---------- */
+    textarea,
+    input[type=text],
+    input[type=email],
+    select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 6px;
+        box-sizing: border-box;
+    }
+    /* ---------- TABLE ---------- */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        margin-bottom: 25px;
+    }
+    table, th, td {
+        border: 1px solid #ccc;
+        text-align: left;
+        padding: 8px;
+    }
+    /* Mobile horizontal scroll */
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+    input[type="checkbox"],
+    input[type="radio"] {
+    transform: scale(1.2);
+    margin-right: 6px;
+    }
+    /* ---------- CHECKBOX TABLE ---------- */
+    .checkbox-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #f2f2f2;
+        counter-reset: option;
+    }
+    .checkbox-table tr {
+        border: 1px solid #ccc;
+    }
+    .checkbox-table td {
+        padding: 14px 18px;
+        background: #e9e9e9;
+    }
+    .checkbox-table label {
+        display: inline-block;
+        width: 100%;
+        font-size: 16px;
+    }
+    .checkbox-table tr td label::before {
+        counter-increment: option;
+        content: counter(option, upper-alpha) ") ";
+        font-weight: normal;
+        margin-right: 6px;
+    }
+    /* ---------- ALPHA TABLE ---------- */
+    .alpha-table {
+        counter-reset: row;
+    }
+    .alpha-table tr td:first-child::before {
+        counter-increment: row;
+        content: counter(row, upper-alpha) ") ";
+        font-weight: normal;
+    }
+    .options label {
+        display: block;
+        margin-bottom: 8px;
+    }
+    .options input[type="checkbox"],
+    .options input[type="radio"] {
+        margin-right: 8px;
+    }
+    /* ---------- PROGRESS BAR ---------- */
+    #progressContainer {
+        position: sticky;
+        top: 60px;
+        z-index: 1000;
+        background: #116980;
+        padding: 12px 20px;
+        border-bottom: 1px solid #ddd;
+        color: white;
+    }
+    #progressText {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+    #progressBarOuter {
+        background: #cfd8dc;
+        height: 12px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    section,
+    section p,
+    section label,
+    section li,
+    section td,
+    section th,
+    section h2,
+    section h3 {
+    color: #222;
+    }
+    #progressBar {
+        height: 12px;
+        width: 0%;
+        background: linear-gradient(90deg, #7b3fe4, #c77dff);
+        border-radius: 10px;
+        transition: width 0.4s ease-in-out;
+    }
+    /* ---------- LIST ---------- */
+    ul {
+        margin-left: 18px;
+        padding-left: 18px;
+    }
+    section p {
+        color: #333;
+    }
+    li {
+        color: #333;
+    }
+    ul li {
+        margin-bottom: 6px;
+    }
+    /* ---------- BUTTON ---------- */
+    button {
+        min-height: 44px;
+        padding: 12px 18px;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+    /* ---------- STATUS ---------- */
+    #status {
+        font-weight: 600;
+    }
+    /* ---------- QUESTION PAGES (PLACE HERE) ---------- */
+    .qpage {
+    display: none;
+    opacity: 0;
+    transition: 0.1s;
+    }
+
+    .qpage.active {
+    display: block;
+    opacity: 1;
+    }
+
+    .qnav {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 12px;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    }
+    .qpage:first-child + .qnav {
+    display: none;
+    }
+
+
+    /* ---------- MOBILE ADJUSTMENTS ---------- */
+    @media (max-width: 600px) {
+    header h1 {
+        font-size: 22px;
+    }
+    section {
+        padding: 14px;
+    }
+    nav {
+        gap: 10px;
+    }
+    nav a {
+        font-size: 14px;
+    }
+    #progressText {
+        font-size: 13px;
+    }
+    
+/* Review Page Style --- its test version need to implement it further */ 
+.review-section {
+    background: white;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid #e8e8e8;
+}
+
+
+.review-section h2 {
+    color: #004d66;
+    border-bottom: 2px solid #004d66;
+    padding-bottom: 15px;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.review-question {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    border-left: 4px solid #004d66;
+}
+
+.review-question h3 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.review-answer {
+    margin-left: 20px;
+}
+
+.answer-item {
+    margin: 8px 0;
+    padding: 10px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+}
+
+.empty-review {
+    text-align: center;
+    padding: 50px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.empty-review h3 {
+    color: #004d66;
+    margin-bottom: 15px;
+}
+
+.btn-primary {
+    background: #004d66;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.btn-primary:hover {
+    background: #00334d;
+}
+
+nav a {
+    text-decoration: none;
+    color: #004d66;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    background: rgba(0, 77, 102, 0.1);
+}
+
+nav a:not(.accessible) {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+nav a.accessible {
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Progress indicator for nav */
+nav a.completed::after {
+    content: " ✓";
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+nav a.current {
+    background: rgba(0, 77, 102, 0.2);
+    font-weight: bold;
+}
+
+/* //test */
+.review-section {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    border: 1px solid #e0e0e0;
+}
+
+.review-section h2 {
+    color: #004d66;
+    border-bottom: 3px solid #004d66;
+    padding-bottom: 15px;
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 22px;
+}
+
+.review-question {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 5px solid #004d66;
+    transition: all 0.3s ease;
+}
+
+.review-question:hover {
+    background: #f0f7fb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.review-question h3 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.review-answers {
+    margin-left: 10px;
+}
+
+/* Option Groups */
+.option-group {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e8e8e8;
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.option-item:hover {
+    background: #f5f9ff;
+}
+
+.option-selected {
+    background: #e8f5e9;
+    border-left: 4px solid #4CAF50;
+}
+
+.option-not-selected {
+    background: #fafafa;
+    border-left: 4px solid #e0e0e0;
+}
+
+.option-marker {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    margin-right: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+}
+
+.option-selected .option-marker {
+    color: #4CAF50;
+    background: white;
+}
+
+.option-not-selected .option-marker {
+    color: #999;
+    background: #f0f0f0;
+}
+
+.option-text {
+    font-size: 15px;
+    color: #333;
+}
+
+.option-selected .option-text {
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.text-answer {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f0f8ff;
+    border-radius: 6px;
+    border-left: 4px solid #2196F3;
+}
+
+.text-answer strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #1976D2;
+}
+
+.text-value {
+    padding: 10px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #bbdefb;
+    font-size: 15px;
+    color: #333;
+}
+.review-table-container {
+    margin: 20px 0;
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+}
+
+.review-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 600px;
+}
+
+.review-table thead {
+    background: #e6f2f5;
+}
+
+.review-table th {
+    padding: 14px;
+    border: 1px solid #ccc;
+    font-weight: bold;
+    text-align: left;
+    color: #004d66;
+    font-size: 15px;
+}
+
+.review-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    vertical-align: top;
+}
+
+.review-table .task-name {
+    background: #f9f9f9;
+    font-weight: 600;
+    color: #333;
+}
+
+.table-options {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.table-option, .table-option-selected {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.table-option-selected {
+    background: #e8f5e9;
+    border-left: 3px solid #4CAF50;
+}
+
+.table-option {
+    background: #f9f9f9;
+    border-left: 3px solid #e0e0e0;
+}
+
+.table-marker {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.table-option-selected .table-marker {
+    color: #4CAF50;
+}
+
+.table-option .table-marker {
+    color: #999;
+}
+
+.table-label {
+    font-size: 14px;
+    color: #333;
+}
+
+.table-option-selected .table-label {
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+/* Text in tables */
+.table-text-answer {
+    padding: 8px;
+    background: #f0f8ff;
+    border-radius: 4px;
+    border: 1px solid #bbdefb;
+    color: #1976D2;
+    font-size: 14px;
+}
+
+.empty-cell {
+    color: #999;
+    font-style: italic;
+}
+
+/* Empty State */
+.empty-review {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    margin: 30px 0;
+}
+
+.empty-review h3 {
+    color: #004d66;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.empty-review p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 16px;
+}
+
+.btn-primary {
+    background: #004d66;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #00334d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 77, 102, 0.2);
+}
+
+.question-valid {
+    border-left: 4px solid #4CAF50;
+    padding-left: 10px;
+    background-color: #f8fff8;
+    margin-bottom: 20px;
+}
+
+.question-invalid {
+    border-left: 4px solid #f44336;
+    padding-left: 10px;
+    background-color: #fff8f8;
+    margin-bottom: 20px;
+}
+
+.validation-msg {
+    font-size: 12px;
+    margin-top: 5px;
+    font-weight: bold;
+}
+
+}
+
+</style>
+  <script>
+    function togglePGQualificationBox() {
+        const yesRadio = document.getElementById("pg_yes");
+        const textBox = document.getElementById("pg_text").querySelector("input");
+
+        if (yesRadio.checked) {
+        document.getElementById("pg_text").style.display = "block";
+        textBox.required = true;
+        textBox.focus();
+        } else {
+        document.getElementById("pg_text").style.display = "none";
+        textBox.required = false;
+        textBox.value = "";
+        }
+    }
+  </script>
+</head>
+<body>
+    <form id="surveyForm">
+        <header>
+            <h1>Stroke Rehabilitation Clinician Survey</h1>
+        </header>
+
+        <nav>
+          <a href="#" onclick="event.preventDefault(); goToSection('intro')">Introduction</a>
+          <a href="#" onclick="event.preventDefault(); goToSection('sectionA')">Section A</a>
+          <a href="#" onclick="event.preventDefault(); goToSection('sectionB')">Section B</a>
+          <a href="#" onclick="event.preventDefault(); goToSection('sectionC')">Section C</a>
+          <a href="#" onclick="event.preventDefault(); goToSection('sectionD')">Section D</a>
+          <a href="#" onclick="event.preventDefault(); goToSection('sectionE')">Section E</a>
+          <a href="#" onclick="event.preventDefault(); goToSection('sectionF')">Section F</a>
+        </nav>
+
+        <div id="progressContainer">
+            <div id="progressText"></div>
+            <div id="progressBarOuter">
+                <div id="progressBar"></div>
+            </div>
+        </div>
+
+        <section id="intro" class="active">
+            <h2>Introduction</h2>
+            <p>
+                This survey is intended to gather detailed insights from clinicians involved in upper-limb tabletop-based functional training for stroke rehabilitation. It focuses on:
+            </p>
+            <ul>
+                <li><strong>Clinical Practice</strong>: How you design, implement, supervise, and tailor patient-specific upper-limb task training programs in supervised settings.</li>
+                <li><strong>Delegated Task Execution</strong>: How you instruct and empower caregivers to deliver or assist with training in your absence, especially in home or community-based settings.</li>               
+            </ul>
+            <p>
+                Your responses will help us better understand clinical decision-making processes, therapeutic strategies, and key considerations during upper-limb tabletop-based functional training for stroke rehabilitation. The insights you share will directly inform the design of technology that can extend your therapeutic decisions into unsupervised environments, ensuring that patients receive customized, goal-oriented training even in your absence or when in-person supervision is not available. This could include applications in home programs, telerehabilitation, or community-based rehabilitation models.            
+            </p>
+            <p>
+                We deeply value your input, as it reflects real-world expertise and contributes toward creating clinically relevant, patient-centered solutions to extend rehabilitation access and continuity of care.
+            </p>
+            <div class="question">
+                <label>
+                    <input type="checkbox" id="consentCheck" required>
+                    <strong>
+                        I confirm that I have read and understood the study information and
+                        voluntarily agree to participate in this survey.
+                    </strong>
+                </label>
+
+                <p style="font-size:12px; color:#555; margin-left:22px;">
+                    Your responses will be used for research purposes only and will be kept confidential.
+                </p>
+            </div>  
+
+            <button type="button"  onclick="unlockSectionAIfConsented()" style="margin-top:20px;">
+                Start Survey
+            </button>
+        </section>
+
+
+        <section id="sectionA">
+            <!-- <h2>Section A: Therapist Profile & Clinical Context</h2> -->
+
+            
+            <div class="qpage active">
+                <h2>Section A: Therapist Profile & Clinical Context</h2>
+                <p>
+                    Tell us about your professional background and clinical experience.
+                </p>
+            </div>
+
+            <!-- Q1 -->
+            <div class="qpage">
+                <div class="question">
+                    <label><strong>1.Please indicate your professional background.</strong></label>
+                    <div class="options">
+                    <label><input type="radio" name="background" value="OT">Occupational Therapist</label>
+                    <label><input type="radio" name="background" value="PT">Physiotherapist</label>
+                    </div>
+                </div>
+            </div>
+          
+             <!-- Q2 -->
+            <div class="qpage">
+                <div class="question">
+                    <label><strong>2.Years of experience in stroke rehabilitation:</strong></label>
+                    <div class="options">
+                    <label><input type="radio" name="experience" value="0–2 years">0–2 years</label>
+                    <label><input type="radio" name="experience" value="3–5 years">3–5 years</label>
+                    <label><input type="radio" name="experience"value="6–10 years">6–10 years</label>
+                    <label><input type="radio" name="experience"value="11+ years">11+ years</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="qpage">
+                <div class="question">
+                    <label><strong>3.Have you had any post-graduate qualifications in stroke rehabilitation?</strong></label>
+                    <div class="options">
+                        <label><input type="radio" id="pg_yes" name="pg" value="Yes" onclick="togglePGQualificationBox()"> Yes</label>
+                        <label><input type="radio" id="pg_no" name="pg" value="No" onclick="togglePGQualificationBox()"> No</label>
+                        <div id="pg_text" style="display:none; margin-top:10px;">
+                            <input type="text" name="pg_text" placeholder="Please specify...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Q4 -->
+            <div class="qpage">
+                <div class="question">
+                    <label><strong>4.What percentage of your caseload includes stroke survivors with upper-limb impairment?</strong></label>
+                    <div class="options">
+                        <label><input type="radio" name="caseload" value="Less than 25%">Less than 25%</label>
+                        <label><input type="radio" name="caseload"value= "25–50%">25–50%</label>
+                        <label><input type="radio" name="caseload"value= "51–75%">51–75%</label>
+                        <label><input type="radio" name="caseload"value= "More than 75%">More than 75%</label>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Q5 -->
+            <div class="qpage">
+                <div class="question">
+                    <label><strong>5.What best describes your current clinical setting for delivering upper-limb stroke rehabilitation?<br>(Please select all that apply)<br></strong></label>
+                    <div class="options" id="q5-options">
+                        <label><input type="checkbox" name="clinical_setting[]" value="Inpatient"> Inpatient rehabilitation unit</label>
+                        <label><input type="checkbox" name="clinical_setting[]" value="Outpatient"> Outpatient clinic</label>
+                        <label><input type="checkbox" name="clinical_setting[]" value="Community"> Community rehabilitation centre</label>
+                        <label><input type="checkbox" name="clinical_setting[]" value="Home_Therapist"> Home-based care (therapist-supervised)</label>
+                        <label><input type="checkbox" name="clinical_setting[]" value="Home_Caregiver"> Home-based care (caregiver/self-directed)</label>
+                        <label><input type="checkbox" name="clinical_setting[]" value="Tele"> Tele-rehabilitation / virtual sessions</label>
+                    </div>
+                </div>
+                <button type="button" onclick="addQ5Row()">+ Add Row</button>
+            </div>           
+            <script>
+            function addQ5Row() {
+                const container = document.getElementById("q5-options");
+                const index = container.children.length;
+
+                const div = document.createElement("div");
+                div.innerHTML = `
+                    <label>
+                        <input type="checkbox" name="clinical_setting[]" value="other_${index}" checked>
+                        <input type="text" name="q5_other_text_${index}" placeholder="Other setting" oninput="this.previousElementSibling.checked = true">
+                    </label>
+                    <button type="button" onclick="this.parentElement.remove()">❌</button>
+                `;
+                container.appendChild(div);
+            }
+            </script>
+
+            <!-- Q6 -->
+            <div class="qpage">
+                <div class="question">
+                    <label><strong>6.How frequently do you use tabletop-based upper-limb task training in each stroke recovery phase?<br>(Please select all that apply)<br></strong></label>
+                    <table>
+                    <tr>
+                        <th>Phases of stroke recovery</th>
+                        <th>Never</th>
+                        <th>Rarely</th>
+                        <th>Sometimes</th>
+                        <th>Often</th>
+                        <th>Always</th>
+                    </tr>
+                    <tr>
+                        <td>Acute (1–7 days after stroke)</td>
+                        <td><input type="radio" name="acute" value="Never"></td>
+                        <td><input type="radio" name="acute" value="Rarely"></td>
+                        <td><input type="radio" name="acute" value="Sometimes"></td>
+                        <td><input type="radio" name="acute" value="Often"></td>
+                        <td><input type="radio" name="acute" value="Always"></td>
+                    </tr>
+                    <tr>
+                        <td>Subacute (after 1 week – 6 months after stroke)</td>
+                        <td><input type="radio" name="subacute" value="Never"></td>
+                        <td><input type="radio" name="subacute" value="Rarely"></td>
+                        <td><input type="radio" name="subacute" value="Sometimes"></td>
+                        <td><input type="radio" name="subacute" value="Often"></td>
+                        <td><input type="radio" name="subacute" value="Always"></td>
+                    </tr>
+                    <tr>
+                        <td>Chronic (beyond 6 months)</td>
+                        <td><input type="radio" name="chronic" value="Never"></td>
+                        <td><input type="radio" name="chronic" value="Rarely"></td>
+                        <td><input type="radio" name="chronic" value="Sometimes"></td>
+                        <td><input type="radio" name="chronic" value="Often"></td>
+                        <td><input type="radio" name="chronic" value="Always"></td>
+                    </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- <button type="button" onclick="ValidateAndGo('sectionA','sectionB')"> -->
+                <!-- Next
+            </button>            -->
+            <div class="qnav">
+                <button type="button" onclick="prevQ()">Back</button>
+                <button type="button" onclick="nextQ()">Next</button>
+            </div>
+        </section>
+
+
+
+
+        <!-- Section B -->
+        <section id="sectionB">
+            <div class="qpage active">
+                <h2>SECTION B: Clinical Use of Tabletop-Tasks</h2>
+                <p>
+                    Tell us about how you use tabletop functional tasks in therapy.
+                </p>
+            </div>
+            
+            <!-- Q7 -->
+            <div class="qpage">
+                <div class="question">
+
+                    <h3>7.For which upper-limb impairment level (based on Fugl Meyer Assessment for Upper Extremity (FMA-UE))do you usually prescribe the following types of tasks?<br>(Please select all that apply)<br></h3>
+                    <table id="q7-table" border="1" class="alpha-table">
+                    <tr>
+                        <th>Task Type</th>
+                        <th>Mild(FMA-UE score: 50-66)</th>
+                        <th>Moderate(FMA-UE score: 35-49)</th>
+                        <th>Severe(FMA-UE score: 0-34)</th>
+                        <th>Not Used</th>    
+                    </tr>
+                    <tr>
+                        <td>Non-Function-Oriented Upper Limb and Hand Strengthening</td>
+                        <td><input type="checkbox" name="q7_task1[]" value="Mild"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task1[]" value="Moderate"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task1[]" value="Severe"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task1[]" value="Not Used"onchange="toggleq7Row(this.closest('tr'), this)"></td>                
+                    </tr>
+                    <tr>
+                        <td>Functional Gross Motor Reach without Hand Grasp<br>(reaching the arm toward specified targets at different locations)<br></td>
+                        <td><input type="checkbox" name="q7_task2[]" value="Mild"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task2[]" value="Moderate"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task2[]" value="Severe"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task2[]" value="Not Used"onchange="toggleq7Row(this.closest('tr'), this)"></td>                
+                    </tr>
+                    <tr>
+                        <td>Functional Gross Motor Reach with hand grasp and release without object manipulation</td>
+                        <td><input type="checkbox" name="q7_task3[]" value="Mild"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task3[]" value="Moderate"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task3[]" value="Severe"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task3[]" value="Not Used"onchange="toggleq7Row(this.closest('tr'), this)"></td>                
+                    </tr>
+                    <tr>
+                        <td>Advance Object manipulation<br>(In-hand manipulation using objects of different shapes/sizes/textures)<br></td>
+                        <td><input type="checkbox" name="q7_task4[]" value="Mild"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task4[]" value="Moderate"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task4[]" value="Severe"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task4[]" value="Not Used"onchange="toggleq7Row(this.closest('tr'), this)"></td>                
+                    </tr>
+                    <tr>
+                        <td>Patient-Specific Functional Tasks <br>(ADL, IADL, Vocational, Recreational etc..)<br></td>
+                        <td><input type="checkbox" name="q7_task5[]" value="Mild"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task5[]" value="Moderate"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task5[]" value="Severe"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                        <td><input type="checkbox" name="q7_task5[]" value="Not Used"onchange="toggleq7Row(this.closest('tr'), this)"></td>
+                    </tr>
+                    </table>
+                </div>
+                <button type="button" onclick="addq7Row()">+ Add another task</button>
+            </div>
+            <script>
+            function addq7Row() {
+    const table = document.getElementById("q7-table");
+    const rowIndex = table.rows.length;
+    const row = table.insertRow(-1);
+
+    // Task name cell
+    row.insertCell(0).innerHTML = `
+        <input type="text" 
+               name="q7_task_name_${rowIndex}" 
+               id="q7_task_name_${rowIndex}"
+               placeholder="Enter task name"
+               style="width: 90%;">
+        <button type="button" onclick="deleteRow(this)">❌</button>`;
+    
+    const levels = ["Mild", "Moderate", "Severe", "Not Used"];
+    
+    levels.forEach((level, index) => {
+        const cell = row.insertCell(-1);
+        cell.innerHTML = `
+            <input type="checkbox" 
+                   name="q7_dynamic_${rowIndex}[]" 
+                   value="${level}"
+                   onchange="toggleq7Row(this.closest('tr'), this)">
+        `;
+    });
+}
+            </script>
+            <script>
+            function toggleq7Row(row, changedCheckbox) {
+              const checkboxes = row.querySelectorAll('input[type="checkbox"]');
+              const notUsed = row.querySelector('input[value="Not Used"]');
+              const severities = Array.from(checkboxes).filter(cb => cb !== notUsed);
+              if (changedCheckbox === notUsed && notUsed.checked) {
+                severities.forEach(cb => {
+                  cb.checked = false;
+                  cb.disabled = true;
+                });
+              } else {
+                if (severities.some(cb => cb.checked)) {
+                  notUsed.checked = false;
+                  notUsed.disabled = true;
+                } else {
+                  notUsed.disabled = false;
+                }
+                severities.forEach(cb => cb.disabled = false);
+              }
+            }
+            </script>
+
+            <!-- Q8 -->
+            <div class="qpage">
+                <div class = "question">
+                    <h3>8.What roles do you typically perform when delivering therapy involving the following tasks?</h3>
+                    <table id="q8-table" border="1" class="alpha-table">
+                    <tr>
+                        <th>Task Type</th>
+                        <th>Provide instruction as the task happens<br>(Verbal cues and guidance)<br></th>
+                        <th>Demonstrate<br>(Show the task by doing it)<br></th>
+                        <th>Physically Assist<br>(Provides hands-on help, including physical cueing)<br></th>
+                        <th>Train Others<br>(e.g., caregiver)<br></th>                
+                    </tr>            
+                    <tr>
+                        <td>Non-Function-Oriented Upper Limb and Hand Strengthening</td>
+                        <td><input type="checkbox" name="role1[]" value="Instruction"></td>
+                        <td><input type="checkbox" name="role1[]" value="Demonstrate"></td>
+                        <td><input type="checkbox" name="role1[]" value="Assist"></td>
+                        <td><input type="checkbox" name="role1[]" value="Train"></td>                   
+                    </tr>
+                    <tr>
+                        <td>Functional Gross Motor Reach without Hand Grasp<br>(reaching the arm toward specified targets at different locations)<br></td>
+                        <td><input type="checkbox" name="role2[]" value="Instruction"></td>
+                        <td><input type="checkbox" name="role2[]" value="Demonstrate"></td>
+                        <td><input type="checkbox" name="role2[]" value="Assist"></td>
+                        <td><input type="checkbox" name="role2[]" value="Train"></td>                    
+                    </tr>
+                    <tr>
+                        <td>Functional Gross Motor Reach with hand grasp and release without object manipulation</td>
+                        <td><input type="checkbox" name="role3[]" value="Instruction"></td>
+                        <td><input type="checkbox" name="role3[]" value="Demonstrate"></td>
+                        <td><input type="checkbox" name="role3[]" value="Assist"></td>
+                        <td><input type="checkbox" name="role3[]" value="Train"></td>                    
+                    </tr>
+                    <tr>
+                        <td>Advance Object manipulation<br>(In-hand manipulation using objects of different shapes/sizes/textures)<br></td>
+                        <td><input type="checkbox" name="role4[]" value="Instruction"></td>
+                        <td><input type="checkbox" name="role4[]" value="Demonstrate"></td>
+                        <td><input type="checkbox" name="role4[]" value="Assist"></td>
+                        <td><input type="checkbox" name="role4[]" value="Train"></td>                   
+                    </tr>
+                    <tr>
+                        <td>Patient-Specific Functional Tasks<br>(ADL, IADL, Vocational, Recreational etc..)<br></td>
+                        <td><input type="checkbox" name="role5[]" value="Instruction"></td>
+                        <td><input type="checkbox" name="role5[]" value="Demonstrate"></td>
+                        <td><input type="checkbox" name="role5[]" value="Assist"></td>
+                        <td><input type="checkbox" name="role5[]" value="Train"></td>                    
+                    </tr>
+                    </table>
+                </div>
+                <button type="button" onclick="addq8Row()">+ Add another role</button>
+            </div>
+            <script>
+            function addq8Row() {
+    const table = document.getElementById("q8-table");
+    const rowIndex = table.rows.length;
+    const row = table.insertRow(-1);
+
+    row.insertCell(0).innerHTML = `
+        <input type="text" 
+               name="q8_task_name_${rowIndex}" 
+               id="q8_task_name_${rowIndex}"
+               placeholder="Enter task name"
+               style="width: 90%;">
+        <button type="button" onclick="deleteRow(this)">❌</button>`;
+
+    const roles = ["Instruction", "Demonstrate", "Assist", "Train"];
+
+    roles.forEach(role => {
+        row.insertCell(-1).innerHTML = `
+            <input type="checkbox" 
+                   name="q8_dynamic_${rowIndex}[]" 
+                   value="${role}">
+        `;
+    });
+}
+            </script>
+            <!-- <button type="button" onclick="ValidateAndGo('sectionB','sectionC')">
+                Next
+            </button>            -->
+            <div class="qnav">
+                <button type="button" onclick="prevQ()">Back</button>
+                <button type="button" onclick="nextQ()">Next</button>
+            </div>
+        </section>
+
+        
+        <!-- SECTION C -->
+        <section id="sectionC">
+            
+            <div class="qpage active">
+                <h2>SECTION C: Activity Materials & Tools</h2>
+                <p>
+                   Tell us about the materials and tools you use for training.
+                </p>
+            </div>
+            <!-- Q9 -->
+            <div class="qpage">
+                <div class="question">
+                    <h3>9.What types of activity-based training materials do you commonly employ for upper- limb tabletop task training, and for what levels of impairments are they best suited for?<br>
+                        (Please select all that apply)<br>       
+                        (Note: Please consider therapeutic items used during training sessions, not formal assessment tools)<br> </h3>
+
+                    <table id="q9-table" border="1" class="alpha-table">
+                    <tr>
+                        <th>Category</th>
+                        <th>Mild(FMA-UE score: 50-66)</th>
+                        <th>Moderate(FMA-UE score: 35-49)</th>
+                        <th>Severe(FMA-UE score: 0-34)</th>                
+                    </tr>
+                    <tr>
+                        <td>ADL-based items<br>
+                            [Cup,Spoon,Towel,Bottle,Comb]<br>
+                        </td>
+                        <td><input type="checkbox" name="adl_mild" value="adl_mild"></td>
+                        <td><input type="checkbox" name="adl_moderate" value="adl_moderate"></td>
+                        <td><input type="checkbox" name="adl_severe" value="adl_severe"></td>
+                    </tr>
+                    <tr>
+                        <td>Therapy-specific tools<br>
+                            [Cones,Pegs,Marbles,Therapy putty,Weights]<br>
+                        </td>
+                        <td><input type="checkbox" name="therapy_mild" value="therapy_mild"></td>
+                        <td><input type="checkbox" name="therapy_moderate" value="therapy_moderate"></td>
+                        <td><input type="checkbox" name="therapy_severe" value="therapy_severe"></td>
+                    </tr>
+                    <tr>
+                        <td>Fine motor/dexterity tools<br>
+                            [Coins,Tweezers,Nuts & Bolts,Clips]<br>
+                        </td>
+                        <td><input type="checkbox" name="fine_mild" value="fine_mild"></td>
+                        <td><input type="checkbox" name="fine_moderate" value="fine_moderate"></td>
+                        <td><input type="checkbox" name="fine_severe" value="fine_severe"></td>
+                    </tr>
+                    <tr>
+                        <td>Game-based tools<br>(Cognitive motor objects)<br>
+                            [Sorting trays, Pattern blocks, and Puzzles]<br>
+                        </td>
+                        <td><input type="checkbox" name="game_mild" value="game_mild"></td>
+                        <td><input type="checkbox" name="game_moderate" value="game_moderate"></td>
+                        <td><input type="checkbox" name="game_severe" value="game_severe"></td>
+                    </tr> 
+                    </table>
+                </div>
+                <button type="button" onclick="addq9Row()">+ Add another material/tool</button>            
+            </div>
+
+            <script>
+            function addq9Row() {
+    const table = document.getElementById("q9-table");
+    const rowIndex = table.rows.length;
+    const row = table.insertRow(-1);
+
+    // Category cell
+    row.insertCell(0).innerHTML = `
+        <input type="text"
+               name="q9_category_${rowIndex}"
+               id="q9_category_${rowIndex}"
+               placeholder="Material / Tool category"
+               style="width: 90%;">
+        <button type="button" onclick="deleteRow(this)">❌</button>
+    `;
+
+    // Mild
+    row.insertCell(1).innerHTML = `
+        <input type="checkbox" 
+               name="q9_dynamic_${rowIndex}[]" 
+               value="Mild">
+    `;
+
+    // Moderate
+    row.insertCell(2).innerHTML = `
+        <input type="checkbox" 
+               name="q9_dynamic_${rowIndex}[]" 
+               value="Moderate">
+    `;
+
+    // Severe
+    row.insertCell(3).innerHTML = `
+        <input type="checkbox" 
+               name="q9_dynamic_${rowIndex}[]" 
+               value="Severe">
+    `;
+}
+            </script>
+            
+            <!-- <button type="button" onclick="ValidateAndGo('sectionC','sectionD')">
+                Next
+            </button> -->
+            <div class="qnav">
+                <button type="button" onclick="prevQ()">Back</button>
+                <button type="button" onclick="nextQ()">Next</button>
+            </div>
+        </section>
+
+        <!-- Section D -->
+        <section id="sectionD">
+            <div class="qpage active">
+                <h2>SECTION D: Intervention Plan & Implementation</h2>
+                <p>
+                   Tell us about how you plan and adapt your interventions.
+                </p>
+            </div>
+            
+            <!-- Q10 -->
+            <div class = "qpage">
+                <div class="question">
+                    <h3>10.How do you adjust (grading) during upper-limb function therapy?<br>
+                    (Please select all that apply)<br>
+                    </h3>
+                    <table id="q10-table">
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Increase repetitions">
+                    Increasing the number of chosen movement/s repetitions
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Increase duration">
+                    Increasing the duration for which a movement is carried out or a body position is held
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Tolerance fatigue">
+                    Adjusting for the patient’s tolerance or fatigue
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Motivation engagement">
+                    Adapting to motivation or engagement levels
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Assistance levels">
+                    Varying the levels of assistance offered <br>(e.g., verbal, physical)<br>
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Goals preferences">
+                    Customizing to individual goals/preferences
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Caregiver support">
+                    Considering the availability of caregiver support
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Object parameters">
+                    Using smaller/irregular objects <br>(e.g., changing size, shape, weight)<br>
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Motor demand">
+                    Altering motor demand<br> (e.g., overhead, midline crossing, fine vs. gross)<br>
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Sequencing steps">
+                    Sequencing tasks or adding steps <br>(reach + grasp + place)<br>
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Speed precision">
+                    Modifying the task performance speed or precision required
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Posture">
+                    Changing posture
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Object placement">
+                    Varying object placement<br>(direction, distance, table height)<br>
+                    </label>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                    <label>
+                    <input type="checkbox" name="q10[]" value="Environmental distractions">
+                    Modifying environmental distractions<br>(e.g., background noise)<br>
+                    </label>
+                    </td>
+                    </tr>
+                    </table>                
+                </div>
+                <button type="button" onclick="addq10Row()">+ Add Row</button>
+            </div>
+            <script>
+            function addq10Row() {
+              const table = document.getElementById("q10-table");
+              const rowIndex = table.rows.length; // unique index
+
+              const row = table.insertRow(-1);
+
+              // Strategy text
+              row.insertCell(0).innerHTML = `
+                <label>
+                    <input type="checkbox" name="q10[]" value="other_${rowIndex}" checked>
+                    <input type="text"
+                            name="q10_other_text_${rowIndex}"
+                            placeholder="Other strategy"
+                            style="width:90%; margin-left:8px;"
+                            oninput="this.previousElementSibling.checked = true">
+                </label>
+                <button type="button" onclick="deleteRow(this)">❌</button>`;
+            }
+            </script>
+
+            <!-- Q11 -->
+            <div class="qpage">
+                <div class="question">
+                    <h3>11.When do you typically tailor the activity?</h3>
+                    <table border="1" cellpadding="6" cellspacing="0" id="q11-table" class="alpha-table">
+                        <tr>
+                        <th>Scenario</th>
+                        <th>Never</th>
+                        <th>Rarely</th>
+                        <th>Sometimes</th>
+                        <th>Often</th>
+                        <th>Always</th>
+                        <th>How do you tailor it?</th>
+                        </tr>
+                        <tr>
+                        <td>Trunk compensation is observed</td>
+                        <td><input type="radio" name="q11_a" value="Never"></td>
+                        <td><input type="radio" name="q11_a" value="Rarely"></td>
+                        <td><input type="radio" name="q11_a" value="Sometimes"></td>
+                        <td><input type="radio" name="q11_a" value="Often"></td>
+                        <td><input type="radio" name="q11_a" value="Always"></td>  
+                        <td> <input type="text" name="q11_a_note" placeholder="How do you tailor?"></td>              
+                        </tr>
+                        <tr>
+                        <td>Delayed or hesitant movement</td>
+                        <td><input type="radio" name="q11_b"value="Never"></td>
+                        <td><input type="radio" name="q11_b"value="Rarely"></td>
+                        <td><input type="radio" name="q11_b"value="Sometimes"></td>
+                        <td><input type="radio" name="q11_b"value="Often"></td>
+                        <td><input type="radio" name="q11_b"value="Always"></td> 
+                        <td> <input type="text" name="q11_b_note" placeholder="How do you tailor?"></td>                             
+                        </tr>
+                        <tr>
+                        <td>Limited shoulder or elbow ROM</td>
+                        <td><input type="radio" name="q11_c"value="Never"></td>
+                        <td><input type="radio" name="q11_c"value="Rarely"></td>
+                        <td><input type="radio" name="q11_c"value="Sometimes"></td>
+                        <td><input type="radio" name="q11_c"value="Often"></td>
+                        <td><input type="radio" name="q11_c"value="Always"></td>    
+                        <td> <input type="text" name="q11_c_note" placeholder="How do you tailor?"></td>                         
+                        </tr>
+                        <tr>
+                        <td>Frequent object drops or slips</td>
+                        <td><input type="radio" name="q11_d"value="Never"></td>
+                        <td><input type="radio" name="q11_d"value="Rarely"></td>
+                        <td><input type="radio" name="q11_d"value="Sometimes"></td>
+                        <td><input type="radio" name="q11_d"value="Often"></td>
+                        <td><input type="radio" name="q11_d"value="Always"></td>    
+                        <td> <input type="text" name="q11_d_note" placeholder="How do you tailor?"></td>                          
+                        </tr>
+                        <tr>
+                        <td>Poor hand pre-shaping</td>
+                        <td><input type="radio" name="q11_e"value="Never"></td>
+                        <td><input type="radio" name="q11_e"value="Rarely"></td>
+                        <td><input type="radio" name="q11_e"value="Sometimes"></td>
+                        <td><input type="radio" name="q11_e"value="Often"></td>
+                        <td><input type="radio" name="q11_e"value="Always"></td>    
+                        <td> <input type="text" name="q11_e_note" placeholder="How do you tailor?"></td>                        
+                        </tr>
+                        <tr>
+                        <td>Difficulty with in-hand manipulation</td>
+                        <td><input type="radio" name="q11_f"value="Never"></td>
+                        <td><input type="radio" name="q11_f"value="Rarely"></td>
+                        <td><input type="radio" name="q11_f"value="Sometimes"></td>
+                        <td><input type="radio" name="q11_f"value="Often"></td>
+                        <td><input type="radio" name="q11_f"value="Always"></td>    
+                        <td> <input type="text" name="q11_f_note" placeholder="How do you tailor?"></td>                         
+                        </tr>
+                        <tr>
+                        <td>Signs of fatigue or pain during activity</td>
+                        <td><input type="radio" name="q11_g"value="Never"></td>
+                        <td><input type="radio" name="q11_g"value="Rarely"></td>
+                        <td><input type="radio" name="q11_g"value="Sometimes"></td>
+                        <td><input type="radio" name="q11_g"value="Often"></td>
+                        <td><input type="radio" name="q11_g"value="Always"></td>    
+                        <td> <input type="text" name="q11_g_note" placeholder="How do you tailor?"></td>                         
+                        </tr>
+                        <tr>
+                        <td>Poor sequencing or disorganized task flow</td>
+                        <td><input type="radio" name="q11_h"value="Never"></td>
+                        <td><input type="radio" name="q11_h"value="Rarely"></td>
+                        <td><input type="radio" name="q11_h"value="Sometimes"></td>
+                        <td><input type="radio" name="q11_h"value="Often"></td>
+                        <td><input type="radio" name="q11_h"value="Always"></td>   
+                        <td> <input type="text" name="q11_h_note" placeholder="How do you tailor?"></td>                           
+                        </tr>
+                        <tr>
+                        <td>Unsafe handling of tools or objects</td>
+                        <td><input type="radio" name="q11_i"value="Never"></td>
+                        <td><input type="radio" name="q11_i"value="Rarely"></td>
+                        <td><input type="radio" name="q11_i"value="Sometimes"></td>
+                        <td><input type="radio" name="q11_i"value="Often"></td>
+                        <td><input type="radio" name="q11_i"value="Always"></td>  
+                        <td> <input type="text" name="q11_i_note" placeholder="How do you tailor?"></td>                           
+                        </tr>
+                        <tr>
+                        <td>Inconsistent reach and grasp timing</td>
+                        <td><input type="radio" name="q11_j"value="Never"></td>
+                        <td><input type="radio" name="q11_j"value="Rarely"></td>
+                        <td><input type="radio" name="q11_j"value="Sometimes"></td>
+                        <td><input type="radio" name="q11_j"value="Often"></td>
+                        <td><input type="radio" name="q11_j"value="Always"></td>     
+                        <td> <input type="text" name="q11_j_note" placeholder="How do you tailor?"></td>                        
+                        </tr>
+                        <tr>
+                        <td>Poor bilateral coordination</td>
+                        <td><input type="radio" name="q11_k"value="Never"></td>
+                        <td><input type="radio" name="q11_k"value="Rarely"></td>
+                        <td><input type="radio" name="q11_k"value="Sometimes"></td>
+                        <td><input type="radio" name="q11_k"value="Often"></td>
+                        <td><input type="radio" name="q11_k"value="Always"></td>
+                        <td> <input type="text" name="q11_k_note" placeholder="How do you tailor?"></td>              
+                        </tr>               
+                    </table>                    
+                </div>
+
+                <!-- Button to add more "Other" rows -->
+                <button type="button" onclick="addq11Row()">+ Add Row</button>
+            </div>
+
+            <script>
+            function addq11Row() {
+                const table = document.getElementById("q11-table");
+                const rowIndex = table.rows.length;
+
+                const row = table.insertRow(-1);
+
+                // Scenario
+                row.insertCell(0).innerHTML =
+                  `<input type="text"
+                          id="q11_other_scenario_${rowIndex}"
+                          name="q11_other_scenario_${rowIndex}"
+                          placeholder="Other scenario"
+                          data-optional>
+                          
+                            <button type="button" onclick="deleteRow(this)" style="padding: 6px 12px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">❌</button>`;
+
+                // Radios
+                const radioValues = ["Never", "Rarely", "Sometimes", "Often", "Always"];
+                for (let i = 0; i < radioValues.length; i++) {
+                  row.insertCell(i + 1).innerHTML =
+                    `<input type="radio"
+                            name="q11_other_${rowIndex}"
+                            value="${radioValues[i]}"
+                            data-paired-text="q11_other_scenario_${rowIndex}"
+                            onchange="document.getElementById('q11_other_proxy_${rowIndex}').checked = true;">`;
+                }
+
+                // Adjustment text
+                row.insertCell(6).innerHTML =
+                  `<input type="text"
+                          id="q11_other_adjustment_${rowIndex}"
+                          name="q11_other_adjustment_${rowIndex}"
+                          placeholder="Describe adjustment"
+                          data-optional>`;
+
+                // Hidden proxy
+                const proxy = document.createElement("input");
+                proxy.type = "checkbox";
+                proxy.id = `q11_other_proxy_${rowIndex}`;
+                proxy.name = `q11_other_proxy_${rowIndex}`;
+                proxy.value = "selected";
+                proxy.style.display = "none";
+                proxy.setAttribute("data-paired-text", `q11_other_adjustment_${rowIndex}`);
+                const cell = row.insertCell(7);
+                cell.appendChild(proxy);
+                // cell.innerHTML += `<button type="button" onclick="deleteRow(this)">❌</button>`;
+                // row.insertCell(7).innerHTML =
+                //     `<button type="button" onclick="deleteRow(this)">❌</button>`;
+              }
+            </script>
+
+            <!-- Q12 -->
+            <div class="qpage">
+                <div class="question">
+                    <h3>12.When delivering feedback, which phase(s) do you emphasize?</h3>
+                    <label><input type="checkbox" name="q12[]"value="During"> Primarily during task execution</label><br>
+                    <label><input type="checkbox" name="q12[]" value="After"> Primarily after task completion</label><br>
+                </div>
+            </div>
+
+            <!-- Q13 -->
+            <div class="qpage">
+                <div class="question">
+                    <h3>13.How often do you use the following types of feedback in upper-limb table-top functional training?</h3>
+                    <table border="1" cellpadding="6" cellspacing="0" id="q13-table" class="alpha-table">
+                        <tr>
+                        <th>Feedback Type</th>
+                        <th>Never</th>
+                        <th>Rarely</th>
+                        <th>Sometimes</th>
+                        <th>Often</th>
+                        <th>Always</th>
+                        </tr>
+                        <tr>
+                        <td>Verbal feedback on performance<br>(e.g., lift your elbow, avoid leaning, open your fingers)<br></td>
+                        <td><input type="radio" name="q13_a"value="Never"></td>
+                        <td><input type="radio" name="q13_a"value="Rarely"></td>
+                        <td><input type="radio" name="q13_a"value="Sometimes"></td>
+                        <td><input type="radio" name="q13_a"value="Often"></td>
+                        <td><input type="radio" name="q13_a"value="Always"></td>
+                        </tr>
+                        <tr>
+                        <td>Visual demonstration / mirroring<br>(therapist shows or performs movement alongside the patient)<br></td>
+                        <td><input type="radio" name="q13_b"value="Never"></td>
+                        <td><input type="radio" name="q13_b"value="Rarely"></td>
+                        <td><input type="radio" name="q13_b"value="Sometimes"></td>
+                        <td><input type="radio" name="q13_b"value="Often"></td>
+                        <td><input type="radio" name="q13_b"value="Always"></td>
+                        </tr>
+                        <tr>
+                        <td>Manual/tactile guidance<br></td>
+                        <td><input type="radio" name="q13_c"value="Never"></td>
+                        <td><input type="radio" name="q13_c"value="Rarely"></td>
+                        <td><input type="radio" name="q13_c"value="Sometimes"></td>
+                        <td><input type="radio" name="q13_c"value="Often"></td>
+                        <td><input type="radio" name="q13_c"value="Always"></td>
+                        </tr>
+                        <tr>
+                        <td>Motivational encouragement<br>(e.g., hand-over-hand assistance, joint facilitation)<br></td>
+                        <td><input type="radio" name="q13_d"value="Never"></td>
+                        <td><input type="radio" name="q13_d"value="Rarely"></td>
+                        <td><input type="radio" name="q13_d"value="Sometimes"></td>
+                        <td><input type="radio" name="q13_d"value="Often"></td>
+                        <td><input type="radio" name="q13_d"value="Always"></td>
+                        </tr>
+                        <tr>
+                        <td>Functional relevance cues<br>(e.g., keep going, almost there!)<br></td>
+                        <td><input type="radio" name="q13_e"value="Never"></td>
+                        <td><input type="radio" name="q13_e"value="Rarely"></td>
+                        <td><input type="radio" name="q13_e"value="Sometimes"></td>
+                        <td><input type="radio" name="q13_e"value="Often"></td>
+                        <td><input type="radio" name="q13_e"value="Always"></td>
+                        </tr>
+                        <tr>
+                        <td>Patient self-reflection prompts<br>(e.g., How did that feel?, What was difficult?)<br></td>
+                        <td><input type="radio" name="q13_f"value="Never"></td>
+                        <td><input type="radio" name="q13_f"value="Rarely"></td>
+                        <td><input type="radio" name="q13_f"value="Sometimes"></td>
+                        <td><input type="radio" name="q13_f"value="Often"></td>
+                        <td><input type="radio" name="q13_f"value="Always"></td>
+                        </tr>
+                        <tr>
+                        <td>Caregiver-inclusive feedback<br>(e.g., progress update, strategies for practice support)<br></td>
+                        <td><input type="radio" name="q13_g"value="Never"></td>
+                        <td><input type="radio" name="q13_g"value="Rarely"></td>
+                        <td><input type="radio" name="q13_g"value="Sometimes"></td>
+                        <td><input type="radio" name="q13_g"value="Often"></td>
+                        <td><input type="radio" name="q13_g"value="Always"></td>
+                        </tr>                    
+                    </table>
+                </div>
+                <button type="button" onclick="addQ13Row()">+ Add Row</button>
+            </div>
+            <!-- Button to add more rows -->
+            <script>
+            function addQ13Row() {
+                let table = document.getElementById("q13-table");
+                let rowCount = table.rows.length;
+                let row = table.insertRow(rowCount);
+
+                // First cell = input box
+                let cell1 = row.insertCell(0);
+                cell1.innerHTML = `<input type="text" name="q13_other_text_${rowCount}" placeholder="Other feedback type"><button type="button" onclick="deleteRow(this)">❌</button>
+                `;
+                // Radio buttons (grouped per row)
+                for (let i = 1; i <= 5; i++) {
+                    let cell = row.insertCell(i);
+                    const labels = ["Never","Rarely","Sometimes","Often","Always"];
+                    cell.innerHTML = `
+                    <input type="radio" name="q13_other_${rowCount}"  value="${labels[i-1]}">`;
+                }
+            }
+            </script>
+            <div class="qnav">
+                <button type="button" onclick="prevQ()">Back</button>
+                <button type="button" onclick="nextQ()">Next</button>
+            </div>
+        </section>
+
+        <!-- Section E -->
+        <section id="sectionE">
+            <div class="qpage active">
+                <h2>SECTION E: Intervention Review</h2>
+                <p>
+                   Tell us about how you review and assess patient progress.
+                </p>
+            </div>
+            
+            <!-- Q14 -->
+            <div class="qpage">
+                <div class="question">
+                    <h3>14.How do you assess progress in therapy?</h3>
+                    <table border="1" cellpadding="6" cellspacing="0" id="q14-table" class="alpha-table">
+                        <tr>
+                        <th>Assessment Methods</th>
+                        <th>Never</th>
+                        <th>Rarely</th>
+                        <th>Sometimes</th>
+                        <th>Often</th>
+                        <th>Always</th>
+                        </tr>
+                        <tr>
+                        <td>Patient self-reports<br>(e.g., fatigue, pain, effort)<br></td>
+                        <td><input type="radio" name="q14_3"value="Never"></td>
+                        <td><input type="radio" name="q14_3"value="Rarely"></td>
+                        <td><input type="radio" name="q14_3"value="Sometimes"></td>
+                        <td><input type="radio" name="q14_3"value="Often"></td>
+                        <td><input type="radio" name="q14_3"value="Always"></td>
+                        </tr>
+                        <tr>
+                        <td>Caregiver feedback</td>
+                        <td><input type="radio" name="q14_5"value="Never"></td>
+                        <td><input type="radio" name="q14_5"value="Rarely"></td>
+                        <td><input type="radio" name="q14_5"value="Sometimes"></td>
+                        <td><input type="radio" name="q14_5"value="Often"></td>
+                        <td><input type="radio" name="q14_5"value="Always"></td>
+                        </tr>
+                        <tr>
+                        <td>Standardized assessments<br>(e.g., FMA-UE, ARAT, Box & Block)<br></td>
+                        <td><input type="radio" name="q14_1"value="Never"></td>
+                        <td><input type="radio" name="q14_1"value="Rarely"></td>
+                        <td><input type="radio" name="q14_1"value="Sometimes"></td>
+                        <td><input type="radio" name="q14_1"value="Often"></td>
+                        <td><input type="radio" name="q14_1"value="Always"></td>
+                        </tr>
+                        <tr>
+                        <td>Observation of task performance<br>(e.g., accuracy, smoothness, completion)<br></td>
+                        <td><input type="radio" name="q14_2"value="Never"></td>
+                        <td><input type="radio" name="q14_2"value="Rarely"></td>
+                        <td><input type="radio" name="q14_2"value="Sometimes"></td>
+                        <td><input type="radio" name="q14_2"value="Often"></td>
+                        <td><input type="radio" name="q14_2"value="Always"></td>
+                        </tr>
+                        <tr>
+                        <td>Task metrics<br>(e.g., number of repetitions, task completion time)<br></td>
+                        <td><input type="radio" name="q14_4"value="Never"></td>
+                        <td><input type="radio" name="q14_4"value="Rarely"></td>
+                        <td><input type="radio" name="q14_4"value="Sometimes"></td>
+                        <td><input type="radio" name="q14_4"value="Often"></td>
+                        <td><input type="radio" name="q14_4"value="Always"></td>
+                        </tr>
+                    </table>
+                </div>
+                <button type="button" onclick="addQ14Row()">+ Add Row</button>
+            </div>
+            
+            <!-- Button to add more rows -->
+            <script>
+            function addQ14Row() {
+              const table = document.getElementById("q14-table");
+              const rowIndex = table.rows.length;
+              const labels = ["Never","Rarely","Sometimes","Often","Always"];
+
+              const row = table.insertRow(-1);
+
+              // Text input
+              row.insertCell(0).innerHTML = `
+                <input type="text" name="q14_other_text_${rowIndex}">
+                <button type="button" onclick="deleteRow(this)">❌</button>
+                `;
+
+              // Likert radios
+              for (let i = 1; i <= 5; i++) {
+                row.insertCell(i).innerHTML = `
+                  <input type="radio"
+                        name="q14_other_${rowIndex}" value="${labels[i-1]}">
+                `;
+              }
+            }
+            </script>
+
+            <!-- Q15 -->
+            <div class="qpage">    
+                <div class="question">
+                    <h3>15.Which aspects of the patient’s behaviour are important when assessing performance?<br>
+                    (Please select all that apply)<br></h3>
+                    <table id="q15-table">
+                        <tr>
+                            <td>
+                            <label>
+                                <input type="checkbox" name="q15[]" value="Movement quality">
+                                Movement quality (smoothness, coordination, compensations)
+                            </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <label>
+                                <input type="checkbox" name="q15[]" value="Fatigue signs">
+                                Fatigue signs (slowing down, posture slump)
+                            </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <label>
+                                <input type="checkbox" name="q15[]" value="Attention engagement">
+                                Attention and engagement
+                            </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <label>
+                                <input type="checkbox" name="q15[]" value="Emotional responses">
+                                Emotional responses (e.g., frustration, motivation)
+                            </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <label>
+                                <input type="checkbox" name="q15[]" value="Assistive strategies">
+                                Use of assistive strategies (e.g., one-handed shortcuts, reliance on support)
+                            </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <label>
+                                <input type="checkbox" name="q15[]" value="Safety tools">
+                                Safety in handling therapy tools
+                            </label>
+                            </td>
+                        </tr>
+                    </table>
+                </div>    
+                <button type="button" onclick="addQ15Row()">+ Add Row</button>        
+            </div> 
+            
+            <script>
+            function addQ15Row() {
+                const table = document.getElementById("q15-table");
+                const rowIndex = table.rows.length;
+                const row = table.insertRow(-1);
+                row.insertCell(0).innerHTML = `
+                    <label>
+                        <input type="checkbox" name="q15[]" value="other_${rowIndex}" checked>
+                        <input type="text"
+                                name="q15_other_${rowIndex}"
+                                placeholder="Other behaviour aspect"
+                                style="width:90%; margin-left:8px;"
+                                oninput="this.previousElementSibling.checked = true">
+                    </label>
+                    <button type="button" onclick="deleteRow(this)">❌</button>
+                `;
+            }
+            </script>
+           <div class="qnav">
+                <button type="button" onclick="prevQ()">Back</button>
+                <button type="button" onclick="nextQ()">Next</button>
+            </div>
+        </section>
+        
+        <!-- Section F -->
+        <section id="sectionF">
+            
+            <div class="qpage active">
+                <h2>SECTION F: Service Model Across Settings</h2>
+                <p>
+                   Tell us about how therapy continues without your direct supervision.
+                </p>
+            </div>
+            <!-- Q16 -->
+            <div class="qpage">
+                <div class="question">
+                    <h3>16.How do you currently implement tabletop functional task-oriented training for the upper limb stroke rehabilitation in your absence (e.g., at home)?<br>(Please select all that apply)<br></h3>
+                    <table id="q16-table">
+                    <tr><td>
+                    <label><input type="checkbox" name="q16[]" value="Handouts">
+                    Home program handouts (Paper with/without illustrations)
+                    </label>
+                    </td></tr>
+                    <tr><td>
+                    <label><input type="checkbox" name="q16[]" value="Caregiver delivery">
+                    Caregiver-assisted delivery
+                    </label>
+                    </td></tr>
+                    <tr><td>
+                    <label><input type="checkbox" name="q16[]" value="Video checkins">
+                    Phone/video-based check-ins
+                    </label>
+                    </td></tr>
+                    <tr><td>
+                    <label><input type="checkbox" name="q16[]" value="Clinic reviews">
+                    Periodic in-clinic reviews
+                    </label>
+                    </td></tr>
+                    <tr><td>
+                    <label><input type="checkbox" name="q16[]" value="Digital monitoring">
+                    Use of digital monitoring or reminders
+                    </label>
+                    </td></tr>
+                    <tr><td>
+                    <label><input type="checkbox" name="q16[]" value="Demo videos">
+                    Therapist-recorded demonstration videos
+                    </label>
+                    </td></tr>
+                    </table>                
+                </div>
+                <button type="button" onclick="addQ16Row()">+ Add Row</button>
+            </div>
+
+
+            <!-- Button to add more rows -->
+            <script>
+                function addQ16Row() {
+                const table = document.getElementById("q16-table");
+                const rowIndex = table.rows.length;
+                const row = table.insertRow(-1);
+
+                row.insertCell(0).innerHTML = `
+                    <label>
+                    <input type="checkbox" name="q16[]" value="other_${rowIndex}" checked>
+                    <input type="text"
+                            name="q16_other_text_${rowIndex}"
+                            placeholder="Other implementation method"
+                            style="width:90%; margin-left:8px;"
+                            oninput="this.previousElementSibling.checked = true">
+                    </label>
+                    <button type="button" onclick="deleteRow(this)">❌</button>
+                `;
+            }
+            </script>            
+
+            <!-- Q17 -->
+            <div class="qpage">
+                <div class="question">
+                    <h3>17.To what extent do you face the following challenges in implementing the desired therapy program in your absence?</h3>
+                    <table border="1" cellpadding="6" cellspacing="0" id="q17-table" class="alpha-table">
+                        <tr>
+                        <th>Challenges</th>
+                        <th>Not a challenge</th>
+                        <th>Minor challenge</th>
+                        <th>Moderate challenge</th>
+                        <th>Major challenge</th>
+                        </tr>
+                        <tr>
+                        <td>Caregiver availability or involvement</td>
+                        <td><input type="radio" name="q17_1"value="Not a challenge"></td>
+                        <td><input type="radio" name="q17_1"value="Minor challenge"></td>
+                        <td><input type="radio" name="q17_1"value="Moderate challenge"></td>
+                        <td><input type="radio" name="q17_1"value="Major challenge"></td>
+                        </tr>
+                        <tr>
+                        <td>Lack of patient motivation</td>
+                        <td><input type="radio" name="q17_2"value="Not a challenge"></td>
+                        <td><input type="radio" name="q17_2"value="Minor challenge"></td>
+                        <td><input type="radio" name="q17_2"value="Moderate challenge"></td>
+                        <td><input type="radio" name="q17_2"value="Major challenge"></td>
+                        </tr>
+                        <tr>
+                        <td>Inability to monitor patient progress</td>
+                        <td><input type="radio" name="q17_3"value="Not a challenge"></td>
+                        <td><input type="radio" name="q17_3"value="Minor challenge"></td>
+                        <td><input type="radio" name="q17_3"value="Moderate challenge"></td>
+                        <td><input type="radio" name="q17_3"value="Major challenge"></td>
+                        </tr>
+                        <tr>
+                        <td>Need for someone to guide or sequence tasks properly</td>
+                        <td><input type="radio" name="q17_4"value="Not a challenge"></td>
+                        <td><input type="radio" name="q17_4"value="Minor challenge"></td>
+                        <td><input type="radio" name="q17_4"value="Moderate challenge"></td>
+                        <td><input type="radio" name="q17_4"value="Major challenge"></td>
+                        </tr>
+                        <tr>
+                        <td>Lack of tailored instructions for the home</td>
+                        <td><input type="radio" name="q17_5"value="Not a challenge"></td>
+                        <td><input type="radio" name="q17_5"value="Minor challenge"></td>
+                        <td><input type="radio" name="q17_5"value="Moderate challenge"></td>
+                        <td><input type="radio" name="q17_5"value="Major challenge"></td>
+                        </tr>
+                        <tr>
+                        <td>Limited access to appropriate materials/tools</td>
+                        <td><input type="radio" name="q17_6"value="Not a challenge"></td>
+                        <td><input type="radio" name="q17_6"value="Minor challenge"></td>
+                        <td><input type="radio" name="q17_6"value="Moderate challenge"></td>
+                        <td><input type="radio" name="q17_6"value="Major challenge"></td>
+                        </tr>
+                        <tr>
+                        <td>Safety concerns when unsupervised</td>
+                        <td><input type="radio" name="q17_7"value="Not a challenge"></td>
+                        <td><input type="radio" name="q17_7"value="Minor challenge"></td>
+                        <td><input type="radio" name="q17_7"value="Moderate challenge"></td>
+                        <td><input type="radio" name="q17_7"value="Major challenge"></td>
+                        </tr>
+                        <tr>
+                        <td>Caregiver not confident in giving feedback or adapting tasks</td>
+                        <td><input type="radio" name="q17_8"value="Not a challenge"></td>
+                        <td><input type="radio" name="q17_8"value="Minor challenge"></td>
+                        <td><input type="radio" name="q17_8"value="Moderate challenge"></td>
+                        <td><input type="radio" name="q17_8"value="Major challenge"></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <button type="button" onclick="addQ17Row()">+ Add Row</button>
+            </div>
+
+
+            <!-- Button to add more rows -->
+            <script>
+            function addQ17Row() {
+                const table = document.getElementById("q17-table");
+                const rowIndex = table.rows.length;
+
+                const row = table.insertRow(-1);
+
+                // Column 1 – Text + Delete button
+                row.insertCell(0).innerHTML = `
+                    <input type="text"
+                        name="q17_other_text_${rowIndex}"
+                        placeholder="Other challenges you face"
+                        style="width:80%;">
+                    <button type="button" onclick="deleteRow(this)">❌</button>
+                `;
+
+                // Likert radios
+                const levels = [
+                    "Not a challenge",
+                    "Minor challenge",
+                    "Moderate challenge",
+                    "Major challenge"
+                ];
+
+                levels.forEach(level => {
+                    row.insertCell(-1).innerHTML = `
+                    <input type="radio"
+                            name="q17_other_${rowIndex}"
+                            value="${level}">
+                    `;
+                });
+            }
+
+            </script>
+
+            <!-- Q18 -->            
+            <div class="qpage">
+                <div class="question">
+                    <h3>18.If you were to train a person (e.g., caregiver, therapy assistant, etc.) 
+                    to administer upper-limb functional task training in your absence, what would you train the person on?<br>
+                    (Please select all that apply)<br>
+                    </h3>
+                    <table border="1" cellpadding="6" cellspacing="0" id="q18-table">
+                    <tr>
+                    <th>Training Area</th>
+                    <th>Note (Optional)</th>
+                    </tr>
+                    <tr>
+                    <td>
+                        <label>
+                        <input type="checkbox" name="q18[]" value="Fatigue compensation"**checked**>
+                        Identifying signs of fatigue or compensation
+                        </label>
+                    </td>
+                    <td>
+                        <input type="text" name="q18_note_1" data-optional style="width: 95%; box-sizing:border-box;">
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="q18[]" value="Object difficulty" **checked**>
+                            Adjusting object difficulty or size                        
+                        </label>            
+                    </td>
+                    <td>
+                        <input type="text" name="q18_note_2" data-optional style="width: 95%; box-sizing:border-box;">
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="q18[]" value="Target position" **checked**>
+                            Adjusting the target position
+                        </label>           
+                    </td>
+                    <td>
+                        <input type="text" name="q18_note_3" data-optional style="width: 95%; box-sizing:border-box;">
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="q18[]" value="Physical verbal support" **checked**>
+                            Providing physical or verbal support
+                        </label>
+                    </td>
+                    <td>
+                        <input type="text" name="q18_note_4" data-optional style="width: 95%; box-sizing:border-box;">
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="q18[]" value="Motivational feedback" **checked**>
+                            Giving motivational or instructional feedback
+                        </label>         
+                    </td>
+                    <td>
+                        <input type="text" name="q18_note_5" data-optional style="width: 95%; box-sizing:border-box;">
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="q18[]" value="Tracking progress" **checked**>
+                            Tracking patient progress
+                        </label>        
+                    </td>
+                    <td><input type="text" name="q18_note_6" data-optional style="width: 95%; box-sizing:border-box;"></td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="q18[]" value="Safety setup"**checked**>
+                            Ensuring safety and proper setup
+                        </label>            
+                    </td>
+                    <td><input type="text" name="q18_note_7" data-optional style="width: 95%; box-sizing:border-box;"></td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="q18[]" value="Task tailoring">
+                            Tailoring tasks based on ability or response
+                        </label>            
+                    </td>
+                    <td><input type="text" name="q18_note_8" data-optional style="width: 95%; box-sizing:border-box;"></td>
+                    </tr>
+                    <tr>
+                    <td>
+                        <label>
+                            <input type="checkbox" name="q18[]" value="Reporting concerns">
+                            Reporting concerns or observations to the therapist when relevant
+                        </label>         
+                    </td>
+                    <td><input type="text" name="q18_note_9" data-optional style="width:95%; box-sizing:border-box;"></td>
+                    </tr>
+                    </table>
+                </div>
+                <button type="button" onclick="addQ18Row()">+ Add Row</button>
+            </div>
+        <!-- Button to add more rows -->
+            <script>
+            // function addQ18Row() {
+            // const table = document.getElementById("q18-table");
+            // const rowIndex = table.rows.length;
+            // const row = table.insertRow(-1);
+
+            // // Column 1: Checkbox + Text
+            // row.insertCell(0).innerHTML = `
+            //     <label>
+            //     <input type="checkbox" name="q18[]" value="other_${rowIndex}" checked>
+            //     <input type="text"
+            //             name="q18_other_text_${rowIndex}"
+            //             oninput="this.previousElementSibling.checked = true"
+            //             placeholder="Other training area"
+            //             style="width:85%; margin-left:8px;">
+            //     </label>
+            //     <button type="button" onclick="deleteRow(this)">❌</button>
+            // `;
+
+            // // Column 2: Note
+            // row.insertCell(1).innerHTML = `
+            //     <input type="text"
+            //         name="q18_note_${rowIndex}"
+            //         placeholder="Optional note">
+            // `;
+            // }
+
+            function addQ18Row() {
+    const table = document.getElementById("q18-table");
+    const rowIndex = table.rows.length;
+    const row = table.insertRow(-1);
+
+    // Column 1: Checkbox + Text (Training Area)
+    const cell1 = row.insertCell(0);
+    cell1.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; width: 100%;">
+            <label style="display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer;">
+                <input type="checkbox" name="q18[]" value="other_${rowIndex}" checked style="transform: scale(1.2); margin-right: 6px;">
+                <input type="text"
+                        name="q18_other_text_${rowIndex}"
+                        oninput="this.previousElementSibling.checked = true"
+                        placeholder="Other training area"
+                        style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+            </label>
+            <button type="button" onclick="deleteRow(this)" style="padding: 6px 12px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">✕ Remove</button>
+        </div>
+    `;
+
+    // Column 2: Note (Optional)
+    const cell2 = row.insertCell(1);
+    cell2.innerHTML = `
+        <input type="text"
+            name="q18_note_${rowIndex}"
+            placeholder="Optional note"
+            data-optional="true"
+            style="width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; box-sizing:border-box;">
+    `;
+    cell2.style.verticalAlign = 'middle';
+}
+            </script>
+            <div class="qnav">
+                <button type="button" onclick="prevQ()">Back</button>
+                <button type="button" onclick="nextQ()">Next</button>
+            </div>
+     
+        
+        </section>
+        </div>
+        <script>
+        function toggleFollowupFields() {
+            const box = document.getElementById("followup_yes");
+            const fields = document.getElementById("followup_fields");
+            const emailInput = document.getElementById("followup_email");
+
+            if (box.checked) {
+                fields.style.display = "block";
+                emailInput.required = true;   // <-- important
+            } else {
+                fields.style.display = "none";
+                emailInput.required = false;  // <-- remove requirement
+                emailInput.value = "";
+            }
+        }
+        </script>
+
+        <section id="review">
+            <h2>Review Answers</h2>
+            <div id="reviewContent"></div>
+            <button type="button" onclick="
+            unlockedIndex = orderedSections.length - 1;
+            goToSection('submit');
+            ">
+            Confirm
+            </button>
+        </section>
+
+        <!-- Submit Section -->
+        <section id="submit" style="padding:20px; text-align:center;">
+        <div class="question" style="margin-top:30px; text-align:left;">
+            <h3>Optional Follow-up Interview</h3>
+
+               <p style="font-size:14px; color:#555;">
+                By consenting to a follow-up interview, you may be invited for a brief
+                discussion to provide deeper clinical insights that will inform the
+                development of future rehabilitation tools and support systems.
+                </p>
+                <p style="font-size:12px; color:#555;">
+                As a token of appreciation for your time and contribution,
+                selected participants will receive a small gift voucher.
+                Participation is entirely voluntary.
+                </p>
+
+                <label>
+                <input type="checkbox" id="followup_yes" onclick="toggleFollowupFields()">
+                I am willing to participate in a detailed semi-structured follow-up interview.
+                </label>
+
+                <div id="followup_fields" style="display:none; text-align:left;">
+                    <label>Email:</label><br>
+                    <input type="email" id="followup_email" name="followup_email" style="width:300px;">
+                    <!-- <label>Phone Number:</label><br> -->
+                    <!-- <label>Phone Number:</label><br>
+                    <input type="text" name="followup_phone" style="width:300px;"> -->
+                </div>
+        </div>
+            <button type="submit" id="submitBtn" style="padding:10px 20px; font-size:16px; background:#004d66; color:white; border:none; border-radius:6px; cursor:pointer;">
+                Submit
+            </button>
+            <p id="status" style="margin-top:10px; font-size:14px;"></p>
+        </section>
+
+        <script>
+        const form = document.getElementById("surveyForm");
+        const status = document.getElementById("status");
+
+        // enhanced version- form submission -- please change it if you want store it directly
+
+
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    // FOLLOWUP VALIDATION
+    const followupBox = document.getElementById('followup_yes');
+    const emailField = document.getElementById('followup_email');
+    
+    if (followupBox.checked && !emailField.value.trim()) {
+        alert("Please enter your email ID if you agree for the follow-up interview.");
+        emailField.focus();
+        return;
+    }
+    
+    // Collect all final data
+    collectAllFormData();
+    
+    // MANUALLY build the parameters to ensure arrays are sent correctly
+    const params = new URLSearchParams();
+    
+    // 1. Get ALL form elements
+    const formElements = document.getElementById('surveyForm').elements;
+    
+    // 2. Process each element
+    for (let i = 0; i < formElements.length; i++) {
+        const element = formElements[i];
+        
+        // Skip buttons and disabled fields
+        if (element.type === 'button' || element.type === 'submit' || element.disabled) {
+            continue;
+        }
+        
+        // Handle different input types
+        if (element.type === 'checkbox' || element.type === 'radio') {
+            if (element.checked) {
+                params.append(element.name, element.value);
+                console.log('Added checked:', element.name, element.value); // Debug
+            }
+        } else if (element.type === 'text' || element.type === 'email' || element.tagName === 'TEXTAREA') {
+            if (element.value && element.value.trim() !== '') {
+                params.append(element.name, element.value.trim());
+                console.log('Added text:', element.name, element.value); // Debug
+            }
+        } else if (element.tagName === 'SELECT') {
+            if (element.value && element.value.trim() !== '') {
+                params.append(element.name, element.value);
+            }
+        }
+    }
+    
+    // 3. Add follow-up email if provided
+    if (followupBox.checked) {
+        params.append('followup_email', emailField.value.trim());
+    }
+    
+    // 4. DEBUG: Log all parameters being sent
+    console.log('Sending params:');
+    for (let [key, value] of params.entries()) {
+        console.log(key + ' = ' + value);
+    }
+    
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.innerText = "Submitting...";
+    
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFZ2BUCAWGUTYPkukuBNyVTfrKjBYOidR0J8coS3QY3te36Op_Nq29mdNtfKhhkXfh/exec";
+    
+    fetch(SCRIPT_URL, {
+        method: "POST",
+        body: params.toString(),
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    })
+    .then(res => res.text())
+    .then(text => {
+        console.log('Response:', text); // Debug
+        if (text === "Success") {
+            surveyState.clearStorage();
+            status.innerHTML = "✅ Thank you! Submitted.";
+            btn.innerText = "Submitted ✓";
+            btn.disabled = false;
+        } else {
+            status.innerHTML = "❌ Submission failed: " + text;
+            btn.disabled = false;
+            btn.innerText = "Submit";
+        }
+    })
+    .catch(err => {
+        status.innerHTML = "❌ Network error: " + err.message;
+        console.error('Fetch error:', err);
+        btn.disabled = false;
+        btn.innerText = "Submit";
+    });
+});
+function testFormSubmission() {
+    const params = new URLSearchParams();
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    
+    console.log('=== CHECKBOX DEBUG ===');
+    console.log('Total checked checkboxes:', checkboxes.length);
+    
+    checkboxes.forEach(cb => {
+        console.log(`Name: ${cb.name}, Value: ${cb.value}`);
+        params.append(cb.name, cb.value);
+    });
+    
+    console.log('=== URL PARAMS ===');
+    console.log(params.toString());
+}
+                    
+        </script>
+</form>
+<script>
+let qIndex = 0;
+let slideTimer = null; 
+
+
+// Question validation tracking
+let questionValidation = {
+    sectionA: { q1: false, q2: false, q3: false, q4: false, q5: false, q6: false },
+    sectionB: { q7: false, q8: false },
+    sectionC: { q9: false },
+    sectionD: { q10: false, q11: false, q12: false, q13: false },
+    sectionE: { q14: false, q15: false },
+    sectionF: { q16: false, q17: false, q18: false }
+};
+
+let unlockedIndex = 0;
+
+const orderedSections = [
+    "intro",
+    "sectionA",
+    "sectionB",
+    "sectionC",
+    "sectionD",
+    "sectionE",
+    "sectionF",
+    "review",
+    "submit"
+];
+
+function goToSection(sectionId) {
+    // Update current section in state
+    surveyState.currentSection = sectionId;
+    surveyState.saveToStorage();
+    
+    // Check if section is accessible
+    if (sectionId !== 'intro' && sectionId !== 'review' && sectionId !== 'submit') {
+        if (!surveyState.isSectionAccessible(sectionId)) {
+            alert(`Please complete the previous sections before accessing ${sectionId.replace('section', 'Section ')}.`);
+            return;
+        }
+    }
+    
+    // Hide all sections
+    document.querySelectorAll('section').forEach(section => {
+        section.classList.remove("active");
+    });
+    
+    // Show target section
+    const target = document.getElementById(sectionId);
+    if (target) {
+        target.classList.add("active");
+        qIndex = 0;
+        showQ(0);
+        updateProgress(sectionId);
+        window.scrollTo(0, 0);
+    }
+}
+
+// Update header navigation
+function setupNavigation() {
+    document.querySelectorAll('nav a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const text = this.textContent.trim();
+            const sectionMap = {
+                'Introduction': 'intro',
+                'Section A': 'sectionA',
+                'Section B': 'sectionB',
+                'Section C': 'sectionC',
+                'Section D': 'sectionD',
+                'Section E': 'sectionE',
+                'Section F': 'sectionF'
+            };
+            
+            const sectionId = sectionMap[text];
+            if (sectionId) {
+                goToSection(sectionId);
+            }
+        });
+    });
+}
+
+function unlockSectionAIfConsented() {
+    const consent = document.getElementById("consentCheck");
+
+    if (consent && consent.checked) {
+        surveyState.markSectionAccessible("sectionA");
+        surveyState.currentSection = "sectionA";
+        goToSection("sectionA");
+    } else {
+        alert("Please provide consent to proceed.");
+    }
+}
+
+
+
+// function updateProgress(sectionId) {
+//     if (sectionId === "review" || sectionId === "submit") {
+//         document.getElementById("progressText").innerText = "Complete";
+//         document.getElementById("progressBar").style.width = "100%";
+//         return;
+//     }
+    
+//     // Calculate progress based on accessible sections
+//     const contentSections = ["sectionA", "sectionB", "sectionC", "sectionD", "sectionE", "sectionF"];
+//     const currentIndex = contentSections.indexOf(sectionId);
+    
+//     if (currentIndex >= 0) {
+//         // Count how many sections are accessible/completed
+//         let completedCount = 0;
+//         for (let i = 0; i <= currentIndex; i++) {
+//             const section = contentSections[i];
+//             if (surveyState.isSectionComplete(section)) {
+//                 completedCount++;
+//             }
+//         }
+        
+//         const total = contentSections.length;
+//         const percent = (completedCount / total) * 100;
+        
+//         document.getElementById("progressText").innerText = `Section ${currentIndex + 1} of ${total}`;
+//         document.getElementById("progressBar").style.width = percent + "%";
+//     }
+// }
+
+function updateProgress(sectionId) {
+    if (sectionId === "review" || sectionId === "submit") {
+        document.getElementById("progressText").innerText = "Complete";
+        document.getElementById("progressBar").style.width = "100%";
+        return;
+    }
+
+    const contentSections = ["sectionA", "sectionB", "sectionC", "sectionD", "sectionE", "sectionF"];
+    const total = contentSections.length;
+
+    // Count ALL completed sections
+    let completedCount = 0;
+    contentSections.forEach(section => {
+        if (surveyState.isSectionComplete(section)) {
+            completedCount++;
+        }
+    });
+
+    const percent = (completedCount / total) * 100;
+
+    document.getElementById("progressText").innerText =
+        `Progress: ${completedCount} / ${total} Sections`;
+
+    document.getElementById("progressBar").style.width = percent + "%";
+}
+
+
+
+function getQPages() {
+    return document.querySelectorAll("section.active .qpage");
+}
+
+
+function showQ(i) {
+    const pages = getQPages();
+    if (!pages.length) return;
+
+    const nav = document.querySelector("section.active .qnav");
+    const backBtn = nav ? nav.querySelector("button:first-child") : null;
+
+    if (slideTimer) {
+        clearTimeout(slideTimer);
+        slideTimer = null;
+    }
+
+    // Hide all pages, show current
+    pages.forEach(p => p.classList.remove("active"));
+    pages[i].classList.add("active");
+
+    // INTRO SLIDE (first page of each section)
+    if (i === 0) {
+        if (nav) nav.style.display = "none";
+        
+        // Auto-advance after 3 seconds on intro page
+        slideTimer = setTimeout(() => {
+            if (qIndex === 0 && pages.length > 1) {
+                qIndex = 1;
+                showQ(qIndex);
+            }
+        }, 2000);
+    } else {
+        if (nav) nav.style.display = "block";
+        if (backBtn) backBtn.disabled = (i === 1);
+        
+        // Validate the question when showing it
+        setTimeout(validateCurrentQuestion, 100);
+    }
+}
+
+function nextQ() {
+    const pages = getQPages();
+    const currentSectionEl = document.querySelector("section.active");
+    if (!currentSectionEl) return;
+
+    const currentSection = currentSectionEl.id;
+
+    // ---- VALIDATE CURRENT QUESTION ----
+    const isLastPage = qIndex >= pages.length - 1;
+
+    // Only validate if NOT last page OR if your last page actually needs validation
+    if (!isLastPage && !validateCurrentQuestion()) {
+        alert('Please complete this question before proceeding.');
+        return;
+    }
+
+    // ---- MOVE TO NEXT QUESTION IN SAME SECTION ----
+    if (!isLastPage) {
+        qIndex++;
+        showQ(qIndex);
+        return;
+    }
+
+    // ---- LAST QUESTION IN SECTION ----
+    // Mark section complete
+    if (currentSection !== 'intro' && currentSection !== 'review' && currentSection !== 'submit') {
+        surveyState.markSectionComplete(currentSection);
+    }
+
+    // ---- SECTION-SPECIFIC NAVIGATION ----
+    if (currentSection === "sectionF") {
+        goToSection("review"); 
+        // Always go to review from Section F
+        generateReview();
+        return;
+    }
+
+    // ---- NORMAL SECTION FLOW ----
+    const nextSection = surveyState.getNextAccessibleSection();
+    if (nextSection) {
+        goToSection(nextSection);
+    }
+}
+
+
+// Check if section has any answers
+function hasAnswersInSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return false;
+    
+    // Check for any filled inputs
+    const inputs = section.querySelectorAll('input, textarea, select');
+    for (let input of inputs) {
+        if (input.type === 'checkbox' || input.type === 'radio') {
+            if (input.checked) return true;
+        } else if (input.value && input.value.trim() !== '') {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+// Start survey - mark Section A as accessible
+function startSurvey() {
+    const consent = document.getElementById("consentCheck");
+    if (!consent.checked) {
+        alert("Please provide consent before starting the survey.");
+        return;
+    }
+    
+    surveyState.markSectionAccessible('sectionA');
+    unlockedIndex = 1;
+    goToSection("sectionA");
+}
+
+function prevQ() {
+    if (qIndex > 0) {
+        qIndex--;
+        showQ(qIndex);
+    }
+}
+
+function validateCurrentQuestion() {
+    const activeSection = document.querySelector('section.active').id;
+    const pages = document.querySelectorAll('section.active .qpage');
+    const currentPage = document.querySelector('section.active .qpage.active');
+    const currentIndex = Array.from(pages).indexOf(currentPage);
+    
+    // Skip intro page (index 0)
+    if (currentIndex === 0) return true;
+    
+    let isValid = false;
+    
+    // Validate based on current page index and section
+    switch(activeSection) {
+        case 'sectionA':
+            switch(currentIndex) {
+                case 1: // Q1
+                    isValid = !!document.querySelector('input[name="background"]:checked');
+                    questionValidation.sectionA.q1 = isValid;
+                    break;
+                case 2: // Q2
+                    isValid = !!document.querySelector('input[name="experience"]:checked');
+                    questionValidation.sectionA.q2 = isValid;
+                    break;
+                case 3: // Q3
+                    const pgSelected = document.querySelector('input[name="pg"]:checked');
+                    const pgText = document.querySelector('input[name="pg_text"]');
+                    if (pgSelected && pgSelected.id === "pg_yes") {
+                        isValid = pgText && pgText.value.trim() !== "";
+                    } else {
+                        isValid = !!pgSelected;
+                    }
+                    questionValidation.sectionA.q3 = isValid;
+                    break;
+                case 4: // Q4
+                    isValid = !!document.querySelector('input[name="caseload"]:checked');
+                    questionValidation.sectionA.q4 = isValid;
+                    break;
+                case 5: // Q5
+                    isValid = document.querySelectorAll('input[name^="clinical_setting"]:checked').length > 0;
+                    questionValidation.sectionA.q5 = isValid;
+                    break;
+                case 6: // Q6
+                    const acuteChecked = document.querySelector('input[name="acute"]:checked');
+                    const subacuteChecked = document.querySelector('input[name="subacute"]:checked');
+                    const chronicChecked = document.querySelector('input[name="chronic"]:checked');
+
+                    isValid = !!acuteChecked && !!subacuteChecked && !!chronicChecked;
+                    questionValidation.sectionA.q6 = isValid;
+                    break;
+            }
+            break;
+            
+        case 'sectionB':
+            switch(currentIndex) {
+                case 1: // Q7
+                    const q7Rows = document.querySelectorAll('#q7-table tr:not(:first-child)');
+
+                    if (q7Rows.length === 0) {
+                        isValid = false;   // No rows = invalid
+                    } else {
+                        isValid = Array.from(q7Rows).every(row => {
+                            const checkedBoxes = row.querySelectorAll('input[type="checkbox"]:checked');
+                            return checkedBoxes.length > 0;
+                        });
+                    }
+
+                    questionValidation.sectionB.q7 = isValid;
+                    break;
+
+                case 2: // Q8
+                    // Q8 is optional, so always valid
+                    isValid = true;
+                    questionValidation.sectionB.q8 = isValid;
+                    break;
+            }
+            break;
+            
+        case 'sectionC':
+            if (currentIndex === 1) { // Q9
+                const rows = document.querySelectorAll('#q9-table tr:not(:first-child)');
+                isValid = Array.from(rows).some(row =>
+                    row.querySelector('input[type="checkbox"]:checked')
+                );
+                questionValidation.sectionC.q9 = isValid;
+            }
+            break;
+            
+        case 'sectionD':
+            switch(currentIndex) {
+                case 1: // Q10
+                    isValid = document.querySelectorAll('input[name^="q10"]:checked').length > 0;
+                    questionValidation.sectionD.q10 = isValid;
+                    break;
+                case 2: // Q11
+                    const q11Groups = ['q11_a','q11_b','q11_c','q11_d','q11_e', 'q11_f','q11_g','q11_h','q11_i','q11_j','q11_k'];
+                    isValid = q11Groups.every(name =>
+                        document.querySelector(`input[name="${name}"]:checked`)
+                    );
+                    questionValidation.sectionD.q11 = isValid;
+                    break;
+                case 3: // Q12
+                    isValid = document.querySelectorAll('input[name^="q12"]:checked').length > 0;
+                    questionValidation.sectionD.q12 = isValid;
+                    break;
+                case 4: // Q13
+                    const q13Groups = ['q13_a','q13_b','q13_c', 'q13_d','q13_e','q13_f','q13_g'];
+                    isValid = q13Groups.every(name =>
+                        document.querySelector(`input[name="${name}"]:checked`)
+                    );
+                    questionValidation.sectionD.q13 = isValid;
+                    break;
+            }
+            break;
+            
+        case 'sectionE':
+            switch(currentIndex) {
+                case 1: // Q14
+                    const q14Groups = ['q14_1','q14_2','q14_3','q14_4','q14_5'];
+                    isValid = q14Groups.every(name =>
+                        document.querySelector(`input[name="${name}"]:checked`)
+                    );
+
+    questionValidation.sectionE.q14 = isValid;
+    break;
+                case 2: // Q15
+                    isValid = document.querySelectorAll('input[name^="q15"]:checked').length > 0;
+                    questionValidation.sectionE.q15 = isValid;
+                    break;
+            }
+            break;
+            
+        case 'sectionF':
+            switch(currentIndex) {
+                case 1: // Q16
+                    isValid = document.querySelectorAll('input[name^="q16"]:checked').length > 0;
+                    questionValidation.sectionF.q16 = isValid;
+                    break;
+                case 2: // Q17
+                    const q17Groups = ['q17_1','q17_2','q17_3','q17_4','q17_5','q17_6','q17_7','q17_8'];
+                    isValid = q17Groups.every(name =>
+                        document.querySelector(`input[name="${name}"]:checked`)
+                    );
+                    questionValidation.sectionF.q17 = isValid;
+                    break;
+                case 3: // Q18 (optional)
+                    isValid = true;
+                    questionValidation.sectionF.q18 = isValid;
+                    break;
+            }
+            break;
+    }
+    
+    // Update UI
+    updateQuestionUI(activeSection, currentIndex, isValid);
+    
+    return isValid;
+}
+
+function updateQuestionUI(section, questionIndex, isValid) {
+    const pages = document.querySelectorAll(`#${section} .qpage`);
+    if (questionIndex < pages.length) {
+        const currentPage = pages[questionIndex];
+        const questionDiv = currentPage.querySelector('.question');
+        
+        if (questionDiv) {
+            // Remove existing validation classes
+            questionDiv.classList.remove('question-valid', 'question-invalid');
+            
+            // Add appropriate class
+            if (questionIndex > 0) { // Don't style intro page
+                questionDiv.classList.add(isValid ? 'question-valid' : 'question-invalid');
+            }
+            
+            // Update or create validation message
+            let msg = questionDiv.querySelector('.validation-msg');
+            if (!msg) {
+                msg = document.createElement('div');
+                msg.className = 'validation-msg';
+                questionDiv.appendChild(msg);
+            }
+            
+            msg.textContent = isValid ? '✓ Complete' : '✗ Required';
+            msg.style.color = isValid ? 'green' : 'red';
+            msg.style.fontSize = '12px';
+            msg.style.marginTop = '5px';
+            msg.style.fontWeight = 'bold';
+        }
+    }
+}
+
+function updateQuestionValidationUI(questionDiv, isValid) {
+    // Remove existing validation classes
+    questionDiv.classList.remove('question-valid', 'question-invalid');
+    
+    // Add appropriate class
+    questionDiv.classList.add(isValid ? 'question-valid' : 'question-invalid');
+    
+    // Update or create validation message
+    let msg = questionDiv.querySelector('.validation-msg');
+    if (!msg) {
+        msg = document.createElement('div');
+        msg.className = 'validation-msg';
+        questionDiv.appendChild(msg);
+    }
+    
+    msg.textContent = isValid ? '✓ Complete' : '✗ Required';
+    msg.style.color = isValid ? 'green' : 'red';
+    msg.style.fontSize = '12px';
+    msg.style.marginTop = '5px';
+    msg.style.fontWeight = 'bold';
+}
+
+// Replace your existing getAnswersForReview function with this:
+function getAnswersForReview(sectionId) {
+    let html = '';
+    
+    const section = document.getElementById(sectionId);
+    if (!section) return html;
+    
+    // Get all questions in this section
+    const questions = section.querySelectorAll('.qpage .question');
+    
+    questions.forEach((question, index) => {
+        // Skip intro page
+        if (!question.querySelector('input, table, textarea')) return;
+        
+        const questionText = question.querySelector('strong, label, h3')?.textContent || `Question ${index}`;
+        
+        html += `
+            <div class="review-question">
+                <h3>${questionText}</h3>
+                <div class="review-answers">
+        `;
+        
+        // 1. TABLES - Display full table with all options and highlight selections
+        const tables = question.querySelectorAll('table');
+        if (tables.length > 0) {
+            html += renderTablesOnly(question);
+        } 
+        // 2. ONLY show radio/checkbox options if there's NO table in this question
+        else {
+            // RADIO BUTTONS
+            const radioGroups = {};
+            question.querySelectorAll('input[type="radio"]').forEach(radio => {
+                const name = radio.name;
+                if (!radioGroups[name]) radioGroups[name] = [];
+                radioGroups[name].push(radio);
+            });
+            
+            Object.keys(radioGroups).forEach(groupName => {
+                const radios = radioGroups[groupName];
+                if (radios.length > 0) {
+                    html += `<div class="option-group">`;
+                    radios.forEach(radio => {
+                        const label = radio.closest('label');
+                        const labelText = label ? label.textContent.replace('✔', '').trim() : radio.value;
+                        const isChecked = radio.checked;
+                        const optionClass = isChecked ? 'option-selected' : 'option-not-selected';
+                        
+                        html += `
+                            <div class="option-item ${optionClass}">
+                                <span class="option-marker">${isChecked ? '✓' : '○'}</span>
+                                <span class="option-text">${labelText}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+            });
+            
+            // CHECKBOXES - only for non-table questions
+            const checkboxes = question.querySelectorAll('input[type="checkbox"]');
+            if (checkboxes.length > 0) {
+                html += `<div class="option-group">`;
+                checkboxes.forEach(checkbox => {
+                    const label = checkbox.closest('label');
+                    let labelText = '';
+                    
+                    if (checkbox.value.startsWith('other_')) {
+                        const textInput = label ? label.querySelector('input[type="text"]') : null;
+                        if (textInput && textInput.value.trim()) {
+                            labelText = textInput.value.trim();
+                        } else {
+                            return;
+                        }
+                    } else {
+                        labelText = label
+                            ? label.textContent.replace('✔', '').trim()
+                            : checkbox.value;
+                    }
+                    
+                    const isChecked = checkbox.checked;
+                    const optionClass = isChecked ? 'option-selected' : 'option-not-selected';
+                    
+                    html += `
+                        <div class="option-item ${optionClass}">
+                            <span class="option-marker">${isChecked ? '✓' : '□'}</span>
+                            <span class="option-text">${labelText}</span>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+        }
+        
+        // 3. TEXT INPUTS (always show if they have values)
+        const textInputs = question.querySelectorAll(
+            'input[type="text"]:not([name^="q5_other_text_"]):not([name^="q10_other_text_"]):not([name^="q15_other_"]):not([name^="q16_other_text_"]):not([name^="q18_other_text_"]), input[type="email"], textarea'
+        );
+        // textInputs.forEach(input => {
+        //     if (input.value.trim()) {
+        //         let labelText = 'Answer:';
+        //         if (input.previousElementSibling && input.previousElementSibling.tagName === 'LABEL') {
+        //             labelText = input.previousElementSibling.textContent.trim();
+        //         } else if (input.closest('label')) {
+        //             labelText = input.closest('label').textContent.trim();
+        //         }
+                
+        //         html += `
+        //             <div class="text-answer">
+        //                 <strong>${labelText}</strong>
+        //                 <div class="text-value">${input.value}</div>
+        //             </div>
+        //         `;
+        //     }
+        // });
+        
+        html += `
+                </div>
+            </div>
+        `;
+    });
+    
+    return html;
+}
+
+function renderTablesOnly(question) {
+    let html = "";
+    const tables = question.querySelectorAll('table');
+
+    tables.forEach(table => {
+        html += `<div class="review-table-container" style="margin: 20px 0; overflow-x: auto; background: white; border-radius: 8px; border: 1px solid #e0e0e0; padding: 10px;">`;
+        html += `<table class="review-table" style="width: 100%; border-collapse: collapse; font-size: 14px;">`;
+
+        // Check if this is a single-column table (Q10, Q15, Q16 style)
+        const isSingleColumn = table.rows.length > 0 && table.rows[0].cells.length === 1;
+        
+        if (isSingleColumn) {
+            // For single column tables, just show the content
+            html += '<tbody>';
+            for (let i = 0; i < table.rows.length; i++) {
+                const row = table.rows[i];
+                html += '<tr>';
+                Array.from(row.cells).forEach(cell => {
+                    html += `<td style="padding: 12px; border: 1px solid #ddd; vertical-align: top;">${getTableCellContent(cell)}</td>`;
+                });
+                html += '</tr>';
+            }
+            html += '</tbody>';
+        } else {
+            // Multi-column table with header
+            if (table.rows.length > 0) {
+                html += '<thead><tr>';
+                Array.from(table.rows[0].cells).forEach(cell => {
+                    html += `<th style="padding: 14px; border: 1px solid #ccc; background: #e6f2f5; color: #004d66; font-weight: bold; text-align: left;">${cell.textContent}</th>`;
+                });
+                html += '</tr></thead>';
+            }
+
+            html += '<tbody>';
+            for (let i = 1; i < table.rows.length; i++) {
+                const row = table.rows[i];
+                html += '<tr>';
+
+                Array.from(row.cells).forEach((cell, index) => {
+                    if (index === 0) {
+                        // Handle task name/description
+                        const textInput = cell.querySelector('input[type="text"]');
+                        if (textInput && textInput.value.trim()) {
+                            html += `<td style="padding: 12px; border: 1px solid #ddd; background: #f9f9f9; font-weight: 600;"><strong>${textInput.value.trim()}</strong></td>`;
+                        } else {
+                            const temp = document.createElement('div');
+                            temp.innerHTML = cell.innerHTML;
+                            temp.querySelectorAll('button, input[type="checkbox"], input[type="radio"]').forEach(e => e.remove());
+                            let cellText = temp.textContent.trim();
+                            cellText = cellText.replace(/❌/g, '').trim();
+                            html += `<td style="padding: 12px; border: 1px solid #ddd; background: #f9f9f9; font-weight: 600;"><strong>${cellText || 'Other'}</strong></td>`;
+                        }
+                    } else {
+                        // For other columns, show the checkbox states
+                        html += `<td style="padding: 12px; border: 1px solid #ddd; vertical-align: top;">${getTableCellContent(cell)}</td>`;
+                    }
+                });
+
+                html += '</tr>';
+            }
+            html += '</tbody>';
+        }
+
+        html += '</table></div>';
+    });
+
+    return html;
+}
+
+
+// ========== ENHANCED REVIEW GENERATION ==========
+function generateReview() {
+    const reviewDiv = document.getElementById("reviewContent");
+    reviewDiv.innerHTML = "";
+    
+    // Check if any sections are completed
+    let hasAnyCompletedSections = false;
+    for (const section in surveyState.completedSections) {
+        if (surveyState.completedSections[section]) {
+            hasAnyCompletedSections = true;
+            break;
+        }
+    }
+    
+    if (!hasAnyCompletedSections) {
+        reviewDiv.innerHTML = `
+            <div class="empty-review">
+                <h3>No Completed Sections Yet</h3>
+                <p>Please complete at least one section before reviewing.</p>
+                <button onclick="goToSection('sectionA')" class="btn-primary">
+                    Go to Section A
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    // Generate review for completed sections
+    const sections = [
+        { id: 'sectionA', title: 'Section A: Therapist Profile & Clinical Context' },
+        { id: 'sectionB', title: 'Section B: Clinical Use of Tabletop-Tasks' },
+        { id: 'sectionC', title: 'Section C: Activity Materials & Tools' },
+        { id: 'sectionD', title: 'Section D: Intervention Plan & Implementation' },
+        { id: 'sectionE', title: 'Section E: Intervention Review' },
+        { id: 'sectionF', title: 'Section F: Service Model Across Settings' }
+    ];
+    
+    sections.forEach(section => {
+        if (!surveyState.isSectionComplete(section.id)) return;
+        
+        // Create section container
+        const sectionHTML = `
+            <div class="review-section">
+                <h2>${section.title}</h2>
+        `;
+        
+        reviewDiv.innerHTML += sectionHTML;
+        
+        // Get answers for this section
+        const sectionAnswers = getAnswersForReview(section.id);
+        reviewDiv.innerHTML += sectionAnswers;
+        
+        reviewDiv.innerHTML += `</div>`;
+    });
+    
+    // Mark review as accessible and navigate to it
+    unlockedIndex = Math.max(unlockedIndex, orderedSections.indexOf("review"));
+    goToSection("review");
+}
+
+
+
+function getTableCellContent(cell) {
+    let content = '';
+    
+    // // ---------- SPECIAL HANDLING FOR Q18 (Two-column table with notes) ----------
+    // const table = cell.closest('table');
+    // if (table && table.id === 'q18-table') {
+    //     const cellIndex = cell.cellIndex;
+        
+    //     // Column 1: Training Area with checkboxes
+    //     if (cellIndex === 0) {
+    //         const checkboxItems = cell.querySelectorAll('input[type="checkbox"]');
+            
+    //         if (checkboxItems.length > 0) {
+    //             content += '<div class="table-options" style="display: flex; flex-direction: column; gap: 8px;">';
+                
+    //             checkboxItems.forEach(cb => {
+    //                 if (cb.style.display === 'none' || cb.id?.includes('proxy')) {
+    //                     return;
+    //                 }
+                    
+    //                 const isChecked = cb.checked;
+    //                 const marker = isChecked ? '✓' : '□';
+                    
+    //                 // Get the training area text
+    //                 let labelText = '';
+    //                 const label = cb.closest('label');
+                    
+    //                 if (label) {
+    //                     const textInput = label.querySelector('input[type="text"]');
+    //                     if (textInput && textInput.value.trim()) {
+    //                         labelText = textInput.value.trim();
+    //                     } else {
+    //                         const labelClone = label.cloneNode(true);
+    //                         labelClone.querySelectorAll('input, button').forEach(el => el.remove());
+    //                         labelText = labelClone.textContent.trim();
+    //                     }
+    //                 }
+                    
+    //                 labelText = labelText.replace(/❌/g, '').trim();
+                    
+    //                 if (labelText) {
+    //                     content += `
+    //                         <div style="display: flex; align-items: center; padding: 6px 10px; border-radius: 4px; background: ${isChecked ? '#e8f5e9' : '#f9f9f9'}; border-left: 3px solid ${isChecked ? '#4CAF50' : '#e0e0e0'};">
+    //                             <span style="display: inline-block; width: 20px; height: 20px; line-height: 20px; text-align: center; margin-right: 8px; font-weight: bold; color: ${isChecked ? '#4CAF50' : '#999'};">${marker}</span>
+    //                             <span style="font-size: 14px; color: ${isChecked ? '#2e7d32' : '#333'}; ${isChecked ? 'font-weight: 500;' : ''}">${labelText}</span>
+    //                         </div>
+    //                     `;
+    //                 }
+    //             });
+                
+    //             content += '</div>';
+    //             return content || '<span class="empty-cell">-</span>';
+    //         }
+    //     }
+        
+    //     // Column 2: Note (Optional) - ONLY show text, NO checkboxes, NO markers
+    //     if (cellIndex === 1) {
+    //         const textInputs = cell.querySelectorAll('input[type="text"]');
+    //         textInputs.forEach(input => {
+    //             if (input.value.trim()) {
+    //                 content = `<div class="table-text-answer" style="padding: 8px; background: #f0f8ff; border-radius: 4px; border-left: 4px solid #2196F3;">${input.value.trim()}</div>`;
+    //             }
+    //         });
+    //         return content || '<span class="empty-cell">-</span>';
+    //     }
+    // }
+
+// ---------- SPECIAL HANDLING FOR Q18 (Two-column table with notes) ----------
+const table = cell.closest('table');
+if (table && table.id === 'q18-table') {
+    const cellIndex = cell.cellIndex;
+    
+    // Column 1: Training Area with checkboxes
+    if (cellIndex === 0) {
+        const checkboxItems = cell.querySelectorAll('input[type="checkbox"]');
+        
+        if (checkboxItems.length > 0) {
+            content += '<div class="table-options" style="display: flex; flex-direction: column; gap: 4px;">';
+            
+            // Get stored answers for Q18
+            const storedAnswers = surveyState.answers && surveyState.answers['q18[]'] 
+                ? (Array.isArray(surveyState.answers['q18[]']) ? surveyState.answers['q18[]'] : [surveyState.answers['q18[]']])
+                : [];
+            
+            checkboxItems.forEach(cb => {
+                // Check if this checkbox value is in stored answers
+                const isChecked = storedAnswers.includes(cb.value);
+                
+                // ONLY SHOW SELECTED ITEMS - skip unselected ones
+                if (isChecked) {
+                    const marker = '✓';
+                    
+                    // Get the label text
+                    let labelText = cb.value;
+                    
+                    // Try to get better label text from label
+                    const label = cb.closest('label');
+                    if (label) {
+                        const labelClone = label.cloneNode(true);
+                        labelClone.querySelectorAll('input, button').forEach(el => el.remove());
+                        const text = labelClone.textContent.trim();
+                        if (text) labelText = text;
+                    }
+                    
+                    // For "other" rows
+                    if (cb.value.startsWith('other_')) {
+                        const row = cb.closest('tr');
+                        const textInput = row ? row.querySelector('td:first-child input[type="text"]') : null;
+                        if (textInput && textInput.value.trim()) {
+                            labelText = textInput.value.trim();
+                        }
+                    }
+                    
+                    content += `
+                        <div style="display: flex; align-items: center; padding: 8px 12px; border-radius: 4px; background: #e8f5e9; border-left: 4px solid #4CAF50; margin-bottom: 2px;">
+                            <span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; margin-right: 12px; font-weight: bold; color: #4CAF50; background: white; border-radius: 4px;">${marker}</span>
+                            <span style="font-size: 14px; color: #2e7d32; font-weight: 500; line-height: 1.4;">${labelText}</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            content += '</div>';
+            
+            // If no selected items, show nothing or a message
+            if (content === '<div class="table-options" style="display: flex; flex-direction: column; gap: 4px;"></div>') {
+                return '<span class="empty-cell" style="color: #999; font-style: italic;">No selections</span>';
+            }
+            
+            return content;
+        }
+    }
+    
+    // Column 2: Note (Optional) - only show if there's a note AND the corresponding checkbox is selected
+    if (cellIndex === 1) {
+        const textInputs = cell.querySelectorAll('input[type="text"]');
+        let noteValue = '';
+        textInputs.forEach(input => {
+            if (input.value.trim()) {
+                noteValue = input.value.trim();
+            }
+        });
+        
+        // Only show note if there's a value
+        if (noteValue) {
+            return `<div style="padding: 8px 12px; background: #f0f8ff; border-radius: 4px; border-left: 4px solid #2196F3; font-size: 14px; color: #1976D2;">${noteValue}</div>`;
+        }
+        return '<span class="empty-cell" style="color: #999; font-style: italic;">-</span>';
+    }
+}
+    
+    // ---------- SPECIAL HANDLING FOR Q10, Q15, Q16 (Single column checkbox tables) ----------
+    if (table && (table.id === 'q10-table' || table.id === 'q15-table' || table.id === 'q16-table')) {
+        const checkboxItems = cell.querySelectorAll('input[type="checkbox"]');
+        
+        if (checkboxItems.length > 0) {
+            content += '<div class="table-options" style="display: flex; flex-direction: column; gap: 8px;">';
+            
+            checkboxItems.forEach(cb => {
+                if (cb.style.display === 'none' || cb.id?.includes('proxy')) {
+                    return;
+                }
+                
+                const isChecked = cb.checked;
+                const marker = isChecked ? '✓' : '□';
+                
+                let labelText = '';
+                const label = cb.closest('label');
+                
+                if (label) {
+                    const labelClone = label.cloneNode(true);
+                    labelClone.querySelectorAll('input, button').forEach(el => el.remove());
+                    labelText = labelClone.textContent.trim();
+                    
+                    const textInput = label.querySelector('input[type="text"]');
+                    if (textInput && textInput.value.trim()) {
+                        labelText = textInput.value.trim();
+                    }
+                }
+                
+                labelText = labelText.replace(/❌/g, '').trim();
+                
+                if (labelText && labelText !== 'selected') {
+                    content += `
+                        <div style="display: flex; align-items: center; padding: 6px 10px; border-radius: 4px; background: ${isChecked ? '#e8f5e9' : '#f9f9f9'}; border-left: 3px solid ${isChecked ? '#4CAF50' : '#e0e0e0'};">
+                            <span style="display: inline-block; width: 20px; height: 20px; line-height: 20px; text-align: center; margin-right: 8px; font-weight: bold; color: ${isChecked ? '#4CAF50' : '#999'};">${marker}</span>
+                            <span style="font-size: 14px; color: ${isChecked ? '#2e7d32' : '#333'}; ${isChecked ? 'font-weight: 500;' : ''}">${labelText}</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            content += '</div>';
+            return content || '<span class="empty-cell">-</span>';
+        }
+    }
+    
+    // ---------- FIX FOR Q7, Q8, Q9 (Multi-column checkbox tables) ----------
+    if (table && (table.id === 'q7-table' || table.id === 'q8-table' || table.id === 'q9-table')) {
+        // Get ONLY checkboxes that are DIRECT children of this cell
+        const checkboxes = Array.from(cell.children).filter(el => 
+            el.tagName === 'INPUT' && el.type === 'checkbox'
+        );
+        
+        if (checkboxes.length > 0) {
+            content += '<div class="table-options" style="display: flex; flex-direction: column; gap: 4px;">';
+            
+            checkboxes.forEach(cb => {
+                const isChecked = cb.checked;
+                const marker = isChecked ? '✓' : '□';
+                
+                // Get the value (Mild, Moderate, Severe, Not Used)
+                let labelText = cb.value;
+                
+                content += `
+                    <div style="display: flex; align-items: center; padding: 4px 8px; border-radius: 4px; background: ${isChecked ? '#e8f5e9' : '#f9f9f9'};">
+                        <span style="display: inline-block; width: 20px; height: 20px; line-height: 20px; text-align: center; margin-right: 8px; font-weight: bold; color: ${isChecked ? '#4CAF50' : '#999'};">${marker}</span>
+                        <span style="font-size: 14px; color: ${isChecked ? '#2e7d32' : '#333'}; ${isChecked ? 'font-weight: 500;' : ''}">${labelText}</span>
+                    </div>
+                `;
+            });
+            
+            content += '</div>';
+            return content || '<span class="empty-cell">-</span>';
+        }
+    }
+    
+    // ---------- RADIO BUTTONS (Q11, Q13, Q14, Q17) ----------
+    const radios = Array.from(cell.querySelectorAll('input[type="radio"]')).filter(radio => {
+        return radio.closest('td') === cell;
+    });
+    
+    if (radios.length > 0) {
+        content += '<div class="table-options" style="display: flex; flex-direction: column; gap: 4px;">';
+        radios.forEach(radio => {
+            const isChecked = radio.checked;
+            const marker = isChecked ? '✓' : '○';
+            
+            content += `
+                <div style="display: flex; align-items: center; padding: 4px 8px; border-radius: 4px; background: ${isChecked ? '#e8f5e9' : '#f9f9f9'};">
+                    <span style="display: inline-block; width: 20px; height: 20px; line-height: 20px; text-align: center; margin-right: 8px; font-weight: bold; color: ${isChecked ? '#4CAF50' : '#999'};">${marker}</span>
+                    <span style="font-size: 14px; color: ${isChecked ? '#2e7d32' : '#333'};">${radio.value}</span>
+                </div>
+            `;
+        });
+        content += '</div>';
+        return content;
+    }
+    
+    // ---------- TEXT INPUTS ONLY ----------
+    const textInputs = cell.querySelectorAll('input[type="text"]');
+    if (textInputs.length > 0) {
+        let textValue = '';
+        textInputs.forEach(input => {
+            if (input.value.trim() && !input.name?.includes('proxy')) {
+                if (textValue !== '') textValue += ' | ';
+                textValue += input.value.trim();
+            }
+        });
+        
+        if (textValue !== '') {
+            return `<div class="table-text-answer" style="padding: 8px; background: #f0f8ff; border-radius: 4px; border-left: 4px solid #2196F3;">${textValue}</div>`;
+        }
+    }
+    
+    // ---------- FALLBACK: cell text ----------
+    const cellText = cell.textContent.trim();
+    return cellText ? cellText : '<span class="empty-cell" style="color: #999; font-style: italic;">-</span>';
+}
+// Helper: Get answers for a specific section
+function getSectionAnswers(sectionId) {
+    const sectionAnswers = {};
+    const questionPrefix = sectionId.replace('section', 'q');
+    
+    Object.entries(surveyState.answers).forEach(([questionId, answer]) => {
+        if (questionId.startsWith(questionPrefix.substring(0, 2))) { // Match q1, q2, etc.
+            sectionAnswers[questionId] = answer;
+        }
+    });
+    
+    return sectionAnswers;
+}
+
+// Helper: Format answer for display
+function formatAnswerForDisplay(answer) {
+    if (Array.isArray(answer)) {
+        return answer.map(item => `<div class="answer-item">✓ ${item}</div>`).join('');
+    }
+    return `<div class="answer-item">${answer}</div>`;
+}
+
+function setupRealTimeValidation() {
+    // Listen to all input changes
+    document.querySelectorAll('input, textarea, select').forEach(input => {
+        input.addEventListener('change', function() {
+            // Small delay to ensure value is updated
+            setTimeout(validateCurrentQuestion, 50);
+        });
+        
+        if (input.type === 'text' || input.type === 'textarea') {
+            input.addEventListener('blur', validateCurrentQuestion);
+        }
+    });
+}
+
+
+function collectDynamicWithIndex(prefix) {
+    let result = [];
+    const data = surveyState.answers || {};
+
+    Object.keys(data).sort().forEach(key => {
+        if (key.startsWith(prefix) && data[key]) {
+            const index = key.replace(prefix, "");
+            result.push(`Row ${index}: ${data[key]}`);
+        }
+    });
+
+    return result.join(" | ");
+}
+
+
+function mapInputNameToQuestionId(name) {
+
+    // ---------- DYNAMIC / OTHER FIELDS ----------
+    if (name.startsWith("q5_other_text_")) return "q5_clinical_setting_other";
+
+    if (name.startsWith("q7_task_name_")) return "q7_added_tasks";
+    if (name.startsWith("q7_other_")) return "q7_added_tasks";
+
+    if (name.startsWith("q8_task_")) return "q8_added_roles";
+    if (name.startsWith("q8_other_")) return "q8_added_roles";
+
+    if (name.startsWith("q9_category_")) return "q9_added_materials";
+    if (name.startsWith("q9_other_")) return "q9_added_materials";
+
+    if (name.startsWith("q10_other_text_")) return "q10_other_strategies";
+
+    if (name.startsWith("q11_other_scenario_")) return "q11_other_scenarios";
+    if (name.startsWith("q11_other_adjustment_")) return "q11_other_adjustments";
+
+    if (name.startsWith("q13_other_text_")) return "q13_added_feedback";
+
+    if (name.startsWith("q14_other_text_")) return "q14_other_assessment";
+
+    if (name.startsWith("q15_other_")) return "q15_other_behaviour";
+
+    if (name.startsWith("q16_other_text_")) return "q16_other_implementation";
+
+    if (name.startsWith("q17_other_text_")) return "q17_other_challenges";
+
+    if (name.startsWith("q18_other_text_")) return "q18_other_training";
+    if (name.startsWith("q18_note_")) return "q18_notes";
+    const mapping = {
+        // Section A
+        'background': 'q1_professional_background',
+        'experience': 'q2_years_experience',
+        'pg': 'q3_postgrad_qualifications',
+        'pg_text': 'q3_postgrad_details',
+        'caseload': 'q4_percentage_caseload',
+        'clinical_setting[]': 'q5_clinical_settings',
+        'acute': 'q6_acute_phase',
+        'subacute': 'q6_subacute_phase',
+        'chronic': 'q6_chronic_phase',
+        
+        // Section B
+        'q7_task1[]': 'q7_task1_levels',
+        'q7_task2[]': 'q7_task2_levels',
+        'q7_task3[]': 'q7_task3_levels',
+        'q7_task4[]': 'q7_task4_levels',
+        'q7_task5[]': 'q7_task5_levels',
+        'role1[]': 'q8_role1',
+        'role2[]': 'q8_role2',
+        'role3[]': 'q8_role3',
+        'role4[]': 'q8_role4',
+        'role5[]': 'q8_role5',
+        
+        // Section C
+        'adl_mild': 'q9_adl_mild',
+        'adl_moderate': 'q9_adl_moderate',
+        'adl_severe': 'q9_adl_severe',
+        'therapy_mild': 'q9_therapy_mild',
+        'therapy_moderate': 'q9_therapy_moderate',
+        'therapy_severe': 'q9_therapy_severe',
+        'fine_mild': 'q9_fine_mild',
+        'fine_moderate': 'q9_fine_moderate',
+        'fine_severe': 'q9_fine_severe',
+        'game_mild': 'q9_game_mild',
+        'game_moderate': 'q9_game_moderate',
+        'game_severe': 'q9_game_severe',
+        
+        // Section D
+        'q10[]': 'q10_adjustment_methods',
+        'q11_a': 'q11_trunk_compensation',
+        'q11_a_note': 'q11_trunk_note',
+        'q11_b': 'q11_delayed_movement',
+        'q11_b_note': 'q11_delayed_note',
+        'q11_c': 'q11_limited_rom',
+        'q11_c_note': 'q11_rom_note',
+        'q11_d': 'q11_object_drops',
+        'q11_d_note': 'q11_drops_note',
+        'q11_e': 'q11_poor_preshape',
+        'q11_e_note': 'q11_preshape_note',
+        'q11_f': 'q11_manipulation_difficulty',
+        'q11_f_note': 'q11_manipulation_note',
+        'q11_g': 'q11_fatigue_pain',
+        'q11_g_note': 'q11_fatigue_note',
+        'q11_h': 'q11_poor_sequencing',
+        'q11_h_note': 'q11_sequencing_note',
+        'q11_i': 'q11_unsafe_handling',
+        'q11_i_note': 'q11_unsafe_note',
+        'q11_j': 'q11_inconsistent_timing',
+        'q11_j_note': 'q11_timing_note',
+        'q11_k': 'q11_poor_coordination',
+        'q11_k_note': 'q11_coordination_note',
+        'q12[]': 'q12_feedback_phases',
+        'q13_a': 'q13_verbal_feedback',
+        'q13_b': 'q13_visual_demonstration',
+        'q13_c': 'q13_manual_guidance',
+        'q13_d': 'q13_motivational_encouragement',
+        'q13_e': 'q13_functional_cues',
+        'q13_f': 'q13_self_reflection',
+        'q13_g': 'q13_caregiver_feedback',
+        
+        // Section E
+        'q14_1': 'q14_standardized_assessments',
+        'q14_2': 'q14_observation',
+        'q14_3': 'q14_patient_reports',
+        'q14_4': 'q14_task_metrics',
+        'q14_5': 'q14_caregiver_feedback',
+        'q15[]': 'q15_performance_aspects',
+        
+        // Section F
+        'q16[]': 'q16_implementation_methods',
+        'q17_1': 'q17_caregiver_availability',
+        'q17_2': 'q17_patient_motivation',
+        'q17_3': 'q17_monitor_progress',
+        'q17_4': 'q17_guide_sequence',
+        'q17_5': 'q17_tailored_instructions',
+        'q17_6': 'q17_materials_access',
+        'q17_7': 'q17_safety_concerns',
+        'q17_8': 'q17_caregiver_confidence',
+        'q18[]': 'q18_training_areas'
+    };
+    
+    return mapping[name] || name;
+}
+
+
+
+// Function to collect all form data
+function collectAllFormData() {
+    const form = document.getElementById('surveyForm');
+    const formData = new FormData(form);
+    
+    // Clear existing answers first
+    // if (!surveyState.answers) {
+    surveyState.answers = {};
+    // }
+    
+    for (let [name, value] of formData.entries()) {
+        if (!value) continue;
+        
+        const questionId = mapInputNameToQuestionId(name);
+        if (questionId) {
+            // Handle array values (checkboxes)
+            if (name.endsWith('[]')) {
+
+                // 🔹 FIX HERE
+                if (!Array.isArray(surveyState.answers[questionId])) {
+                    surveyState.answers[questionId] = [];
+                }
+                surveyState.answers[questionId].push(value);
+
+            } else {
+                surveyState.answers[questionId] = value;
+            }
+        }
+    }
+    
+    // Save to state
+    surveyState.saveToStorage();
+}
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setupRealTimeValidation();
+    
+       // Initialize state management
+    if (typeof surveyState !== 'undefined' && surveyState.init) {
+        surveyState.init();
+    }
+    
+    // Setup navigation
+    if (typeof setupNavigation !== 'undefined') {
+        setupNavigation();
+    }
+    
+    // Restore to last accessible section
+    const lastSection = surveyState.currentSection;
+    if (lastSection && lastSection !== 'intro' && surveyState.isSectionAccessible(lastSection)) {
+        goToSection(lastSection);
+    } else {
+        // Default to intro
+        goToSection('intro');
+    }
+    
+    
+    // Add CSS for validation
+    const style = document.createElement('style');
+    style.textContent = `
+        .question-valid {
+            border-left: 4px solid #4CAF50;
+            padding-left: 10px;
+            background-color: #f8fff8;
+            margin-bottom: 20px;
+        }
+        
+        .question-invalid {
+            border-left: 4px solid #f44336;
+            padding-left: 10px;
+            background-color: #fff8f8;
+            margin-bottom: 20px;
+        }
+        
+        .validation-msg {
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        
+        .qnav {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 12px;
+            border-top: 1px solid #ccc;
+            text-align: center;
+            z-index: 1000;
+        }
+        
+        .qnav button {
+            min-height: 44px;
+            padding: 12px 18px;
+            cursor: pointer;
+            border-radius: 6px;
+            margin: 0 10px;
+            background: #004d66;
+            color: white;
+            border: none;
+            font-weight: bold;
+        }
+        
+        .qnav button:hover {
+            background: #00334d;
+        }
+        
+        .qnav button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #ccc;
+        }
+    `;
+    document.head.appendChild(style);    
+    showQ(0);
+});
+
+// ---------- UTILITY FUNCTIONS ----------
+function deleteRow(btn) {
+    const row = btn.closest("tr");
+    if (row) row.remove();
+}
+
+
+
+//state management
+const surveyState = {
+    // Track completion status
+    completedSections: {
+        sectionA: false,
+        sectionB: false,
+        sectionC: false,
+        sectionD: false,
+        sectionE: false,
+        sectionF: false
+    },
+    
+    accessibleSections: {
+        sectionA: false,
+        sectionB: false,
+        sectionC: false,
+        sectionD: false,
+        sectionE: false,
+        sectionF: false
+    },
+    
+    // Store all answers
+    answers: {},
+    
+    // Current position
+    currentSection: 'intro',
+    currentQuestion: 0,
+    
+    // Section order
+    sectionOrder: ['sectionA', 'sectionB', 'sectionC', 'sectionD', 'sectionE', 'sectionF'],
+    
+    // Initialize
+    init() {
+        const saved = localStorage.getItem('surveyState');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            Object.assign(this.completedSections, parsed.completedSections || {});
+            Object.assign(this.accessibleSections, parsed.accessibleSections || {});
+            // Object.assign(this.answers, parsed.answers || {});
+            this.answers = parsed.answers || {};
+            this.currentSection = parsed.currentSection || 'intro';
+            this.currentQuestion = parsed.currentQuestion || 0;
+        }
+        
+        // Always make intro accessible
+        // this.accessibleSections.sectionA = true;
+        
+        this.setupAutoSave();
+        this.updateNavigationUI();
+    },
+    
+    // Mark section as started/accessible
+    markSectionAccessible(sectionId) {
+        this.accessibleSections[sectionId] = true;
+        this.saveToStorage();
+        this.updateNavigationUI();
+    },
+    
+    // Mark section as completed
+    markSectionComplete(sectionId) {
+        this.completedSections[sectionId] = true;
+        
+        // Mark next section as accessible
+        const currentIndex = this.sectionOrder.indexOf(sectionId);
+        if (currentIndex < this.sectionOrder.length - 1) {
+            const nextSection = this.sectionOrder[currentIndex + 1];
+            this.markSectionAccessible(nextSection);
+        }
+        
+        this.saveToStorage();
+        this.updateNavigationUI();
+    },
+    
+    // Check if section is accessible
+    isSectionAccessible(sectionId) {
+        return this.accessibleSections[sectionId] || false;
+    },
+    
+    // Check if section is completed
+    isSectionComplete(sectionId) {
+        return this.completedSections[sectionId] || false;
+    },
+    
+    // Get next accessible section
+    getNextAccessibleSection() {
+        const currentIndex = this.sectionOrder.indexOf(this.currentSection);
+        for (let i = currentIndex + 1; i < this.sectionOrder.length; i++) {
+            const section = this.sectionOrder[i];
+            if (this.isSectionAccessible(section)) {
+                return section;
+            }
+        }
+        return 'review'; // If all sections are accessible, go to review
+    },
+    
+    // Update navigation UI (enable/disable links)
+    updateNavigationUI() {
+        const navLinks = document.querySelectorAll('nav a');
+        navLinks.forEach(link => {
+            const sectionId = this.getSectionIdFromLink(link);
+            if (sectionId && sectionId !== 'intro') {
+                if (this.isSectionAccessible(sectionId)) {
+                    link.style.opacity = '1';
+                    link.style.pointerEvents = 'auto';
+                    link.style.cursor = 'pointer';
+                } else {
+                    link.style.opacity = '0.5';
+                    link.style.pointerEvents = 'none';
+                    link.style.cursor = 'not-allowed';
+                }
+            }
+        });
+    },
+    
+    // Helper: Get section ID from nav link
+    getSectionIdFromLink(link) {
+        const text = link.textContent.trim();
+        const map = {
+            'Introduction': 'intro',
+            'Section A': 'sectionA',
+            'Section B': 'sectionB',
+            'Section C': 'sectionC',
+            'Section D': 'sectionD',
+            'Section E': 'sectionE',
+            'Section F': 'sectionF'
+        };
+        return map[text];
+    },
+    
+    // Save answer
+    saveAnswer(questionId, answer) {
+        this.answers[questionId] = answer;
+        this.saveToStorage();
+    },
+    
+    // Save to localStorage
+    saveToStorage() {
+        localStorage.setItem('surveyState', JSON.stringify({
+            answers: this.answers,
+            completedSections: this.completedSections,
+            accessibleSections: this.accessibleSections,
+            currentSection: this.currentSection,
+            currentQuestion: this.currentQuestion
+        }));
+    },
+    
+    // Clear storage
+    clearStorage() {
+        localStorage.removeItem('surveyState');
+        this.answers = {};
+        this.completedSections = {
+            sectionA:false, sectionB:false, sectionC:false,
+            sectionD:false, sectionE:false, sectionF:false
+        };
+        this.accessibleSections = {
+            sectionA:false, sectionB:false, sectionC:false,
+            sectionD:false, sectionE:false, sectionF:false
+        };
+        this.currentSection = 'intro';
+        this.currentQuestion = 0;
+    },
+    
+    // Setup auto-save
+    setupAutoSave() {
+        document.addEventListener('input', (e) => {
+            if (e.target.matches('input, textarea, select')) {
+                const questionId = this.getQuestionId(e.target);
+                if (questionId) {
+                    const answer = this.collectAnswer(e.target);
+                    this.saveAnswer(questionId, answer);
+                    
+                    // Mark current section as started
+                    if (this.currentSection && this.currentSection !== 'intro') {
+                        this.markSectionAccessible(this.currentSection);
+                    }
+                }
+            }
+        });
+    },
+    
+    // Get question ID from input
+    getQuestionId(input) {
+        const name = input.name || input.id;
+        if (!name) return null;
+        
+        // Simple mapping - you can expand this
+        if (name.includes('background')) return 'q1';
+        if (name.includes('experience')) return 'q2';
+        if (name.includes('pg')) return 'q3';
+        if (name.includes('caseload')) return 'q4';
+        if (name.includes('clinical_setting')) return 'q5';
+        if (name.includes('acute') || name.includes('subacute') || name.includes('chronic')) return 'q6';
+        // Add more mappings as needed
+        
+        return name;
+    },
+    
+    // Collect answer from input
+    collectAnswer(input) {
+        if (input.type === 'checkbox') {
+            const name = input.name;
+            const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+            return Array.from(checkboxes).map(cb => cb.value);
+        } else if (input.type === 'radio') {
+            const radio = document.querySelector(`input[name="${input.name}"]:checked`);
+            return radio ? radio.value : null;
+        } else {
+            return input.value;
+        }
+    }
+};
+
+</script>
+</body>
+</html>
